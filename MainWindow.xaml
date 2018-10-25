@@ -1,0 +1,26 @@
+﻿<Controls:MetroWindow x:Class="WinMediaPie.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:local="clr-namespace:WinMediaPie"
+        mc:Ignorable="d"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Icon="Assets/icon.png"
+        Title="WinMediaPie Settings"
+        Height="624.782"
+        Width="895.948">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+        <!--<WindowsFormsHost Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <wf:Panel x:Name="sndvolPanel"/>
+        </WindowsFormsHost>-->
+    </Grid>
+</Controls:MetroWindow>
