@@ -15,11 +15,4 @@
         <SolidColorBrush Color="#FFB0B0B0"
                          Opacity="0.05" />
     </Window.Background>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0*"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-    </Grid>
 </Window>
