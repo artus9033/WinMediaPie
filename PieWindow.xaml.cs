@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -83,6 +84,16 @@ namespace WinMediaPie
             }
 
             return IntPtr.Zero;
+        }
+
+        private void Mute_Checked(object sender, RoutedEventArgs e)
+        {
+            muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
+        }
+
+        private void Mute_Unchecked(object sender, RoutedEventArgs e)
+        {
+            muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
         }
     }
 }

@@ -139,5 +139,14 @@
     <Resource Include="Assets\icon.ico" />
     <Resource Include="Assets\icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\speaker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\volume-off.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\volume-high.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
