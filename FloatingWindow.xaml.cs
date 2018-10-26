@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -23,7 +24,7 @@ namespace WinMediaPie
     /// <summary>
     /// Logika interakcji dla klasy PieWindow.xaml
     /// </summary>
-    public partial class PieWindow : Window
+    public partial class FloatingWindow : Window
     {
         [DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr window, int index, int value);
@@ -39,21 +40,41 @@ namespace WinMediaPie
         const int GWL_EXSTYLE = -20;
         const int WS_EX_TOOLWINDOW = 0x00000080;
         const int WS_EX_APPWINDOW = 0x00040000;
-        private Action display;
 
-        public PieWindow(Action display)
+        private PieWindow pieWindow;
+        private bool IsBeingDisplayed = false;
+
+        public FloatingWindow()
         {
-            this.display = display;
-
             InitializeComponent();
 
+            this.ShowInTaskbar = false;
+            this.pieWindow = new PieWindow(this.Display);
+
+            this.Display();
+        }
+
+        public void HideAllWindows()
+        {
+            this.Display();
+        }
+
+        private void Display() {
+            this.pieWindow.Hide();
+            this.Show();
             System.Drawing.Rectangle workArea = Common.Helpers.WindowHelpers.CurrentScreen(this).Bounds;
             this.Top = workArea.Height * 0.5 - this.Height / 2;
             this.Left = workArea.Width - this.Width;
-
-            this.ShowInTaskbar = false;
+            this.IsBeingDisplayed = true;
         }
 
+        void LetGo()
+        {
+            this.Hide();
+            this.pieWindow.Show();
+            this.IsBeingDisplayed = false;
+        }
+        
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
@@ -83,6 +104,22 @@ namespace WinMediaPie
             }
 
             return IntPtr.Zero;
+        }
+
+        private void Click(object sender, TouchEventArgs e)
+        {
+            this.Click();
+        }
+
+        private void Click(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            this.Click();
+        }
+
+        private void Click()
+        {
+            if (this.IsBeingDisplayed) this.LetGo(); else this.Display();
+            this.IsBeingDisplayed = !this.IsBeingDisplayed;
         }
     }
 }

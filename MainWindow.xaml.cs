@@ -19,7 +19,7 @@ namespace WinMediaPie
 {
     public partial class MainWindow : MetroWindow
     {
-        Window pieWindow;
+        FloatingWindow floatingWindow;
 
         public const int GWL_STYLE = (-16);
         public IntPtr WS_VISIBLE = (IntPtr)0x10000000L;
@@ -61,7 +61,7 @@ namespace WinMediaPie
 
         public MainWindow()
         {
-            this.prepareFS();
+            this.PrepareFS();
 
             InitializeComponent();
 
@@ -73,7 +73,8 @@ namespace WinMediaPie
             timer.Enabled = true;
             */
 
-            this.StateChanged += this.windowStateChanged;
+            this.StateChanged += this.WindowStateChanged;
+            this.Loaded += MainWindow_Loaded;
 
             var components = new System.ComponentModel.Container();
             var contextMenu = new System.Windows.Forms.ContextMenu();
@@ -86,18 +87,25 @@ namespace WinMediaPie
             // Initialize menuItem1
             menuItemExit.Index = 0;
             menuItemExit.Text = "Exit";
-            menuItemExit.Click += new System.EventHandler(this.exitClick);
+            menuItemExit.Click += new System.EventHandler(this.ExitClick);
 
             this.notifyIcon.Icon = this.getIconFromFile(AppPaths.iconIcoPath);
             this.notifyIcon.Visible = false;
             this.notifyIcon.Text = APP_ID;
-            this.notifyIcon.DoubleClick += this.notifyIconDoubleClicked;
+            this.notifyIcon.DoubleClick += this.NotifyIconDoubleClicked;
             this.notifyIcon.ContextMenu = contextMenu;
 
-            this.pieWindow = new PieWindow();
+            this.floatingWindow = new FloatingWindow();
         }
 
-        private void bringBack()
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.BeginInvoke((Action)delegate {
+                this.LetGo(true);
+            });
+        }
+
+        private void BringBack()
         {
             this.notifyIcon.Visible = false;
             this.WindowState = WindowState.Minimized;
@@ -105,23 +113,24 @@ namespace WinMediaPie
             this.WindowState = WindowState.Normal;
             this.Focus();
             this.BringIntoView();
-            this.pieWindow.Hide();
+            this.floatingWindow.HideAllWindows();
+            this.floatingWindow.Hide();
             Debug.WriteLine("Bringing the window back...");
         }
 
-        private void letGo(bool hide = true)
+        private void LetGo(bool hide = true)
         {
             this.notifyIcon.Visible = true;
             if (hide)
             {
                 this.Hide();
-                this.pieWindow.Show();
+                this.floatingWindow.Show();
             }
-            this.toast("Running in background");
+            this.Toast(" is running in background");
             Debug.WriteLine("Hiding the window...");
         }
 
-        public void toast(string text = "")
+        public void Toast(string text = "")
         {
             XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastImageAndText03);
 
@@ -138,7 +147,7 @@ namespace WinMediaPie
             ToastNotificationManager.CreateToastNotifier(APP_ID).Show(toast);
         }
 
-        private void prepareFS()
+        private void PrepareFS()
         {
             if (!Directory.Exists(AppPaths.appTmpPath))
             {
@@ -146,13 +155,13 @@ namespace WinMediaPie
             }
 
             Uri iconPngPackUri = new Uri("pack://application:,,,/Assets/icon.png");
-            this.ensureUnpacked(iconPngPackUri, AppPaths.iconPngPath);
+            this.EnsureUnpacked(iconPngPackUri, AppPaths.iconPngPath);
 
             Uri iconIcoPackUri = new Uri("pack://application:,,,/Assets/icon.png");
-            this.ensureUnpacked(iconIcoPackUri, AppPaths.iconIcoPath);
+            this.EnsureUnpacked(iconIcoPackUri, AppPaths.iconIcoPath);
         }
 
-        private void ensureUnpacked(Uri packUri, string diskPath)
+        private void EnsureUnpacked(Uri packUri, string diskPath)
         {
             StreamResourceInfo sourceInfo = System.Windows.Application.GetResourceStream(packUri);
             FileStream ofstream = File.Create(diskPath);
@@ -166,43 +175,43 @@ namespace WinMediaPie
             return System.Drawing.Icon.FromHandle(new Bitmap(path).GetHicon());
         }
 
-        private void aboutClick(object sender, EventArgs e)
+        private void AboutClick(object sender, EventArgs e)
         {
             Debug.WriteLine("Showing the 'about' dialog!");
             this.ShowMessageAsync("About the app", "WinMediaPie developed by Morys, Janus & Pawlica", MessageDialogStyle.Affirmative);
         }
 
-        private void exitClick(object sender, EventArgs e)
+        private void ExitClick(object sender, EventArgs e)
         {
             Debug.WriteLine("Exiting the app!");
             Environment.Exit(0);
         }
 
-        private void notifyIconDoubleClicked(object sender, EventArgs e)
+        private void NotifyIconDoubleClicked(object sender, EventArgs e)
         {
-            this.bringBack();
+            this.BringBack();
         }
 
-        private void windowStateChanged(object sender, EventArgs e)
+        private void WindowStateChanged(object sender, EventArgs e)
         {
             if (this.WindowState == WindowState.Minimized)
             {
-                letGo(false);
+                LetGo(false);
             }
         }
-
+        
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
 
-            letGo(true);
+            LetGo(true);
         }
 
         public static BitmapSource CreateBitmapSourceFromVisual(
-   Double width,
-   Double height,
-   Visual visualToRender,
-   Boolean undoTransformation)
+           Double width,
+           Double height,
+           Visual visualToRender,
+           Boolean undoTransformation)
         {
             if (visualToRender == null)
             {
