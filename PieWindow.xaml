@@ -1,0 +1,25 @@
+﻿<Window x:Class="WinMediaPie.PieWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WinMediaPie"
+        mc:Ignorable="d"
+        Topmost="True"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        AllowsTransparency="True"
+        Title="PieWindow" Height="450" Width="200">
+    <Window.Background>
+        <SolidColorBrush Color="#FFB0B0B0"
+                         Opacity="0.05" />
+    </Window.Background>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+    </Grid>
+</Window>

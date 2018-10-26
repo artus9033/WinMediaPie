@@ -6,7 +6,11 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -15,6 +19,8 @@ namespace WinMediaPie
 {
     public partial class MainWindow : MetroWindow
     {
+        Window pieWindow;
+
         public const int GWL_STYLE = (-16);
         public IntPtr WS_VISIBLE = (IntPtr)0x10000000L;
 
@@ -59,11 +65,13 @@ namespace WinMediaPie
 
             InitializeComponent();
 
+            /*
             System.Windows.Forms.Timer timer;
             timer = new System.Windows.Forms.Timer();
-            timer.Tick += new EventHandler(this.T_Tick);
-            timer.Interval = 400;
+            timer.Tick += new EventHandler(this.RenderOverlay);
+            timer.Interval = 40;
             timer.Enabled = true;
+            */
 
             this.StateChanged += this.windowStateChanged;
 
@@ -85,14 +93,19 @@ namespace WinMediaPie
             this.notifyIcon.Text = APP_ID;
             this.notifyIcon.DoubleClick += this.notifyIconDoubleClicked;
             this.notifyIcon.ContextMenu = contextMenu;
+
+            this.pieWindow = new PieWindow();
         }
 
         private void bringBack()
         {
             this.notifyIcon.Visible = false;
+            this.WindowState = WindowState.Minimized;
             this.Show();
+            this.WindowState = WindowState.Normal;
             this.Focus();
             this.BringIntoView();
+            this.pieWindow.Hide();
             Debug.WriteLine("Bringing the window back...");
         }
 
@@ -102,6 +115,7 @@ namespace WinMediaPie
             if (hide)
             {
                 this.Hide();
+                this.pieWindow.Show();
             }
             this.toast("Running in background");
             Debug.WriteLine("Hiding the window...");
@@ -184,7 +198,37 @@ namespace WinMediaPie
             letGo(true);
         }
 
-        private void T_Tick(object sender, EventArgs e)
+        public static BitmapSource CreateBitmapSourceFromVisual(
+   Double width,
+   Double height,
+   Visual visualToRender,
+   Boolean undoTransformation)
+        {
+            if (visualToRender == null)
+            {
+                return null;
+            }
+            RenderTargetBitmap bmp = new RenderTargetBitmap((Int32)Math.Ceiling(width),
+                (Int32)Math.Ceiling(height), 96, 96, PixelFormats.Pbgra32);
+
+            if (undoTransformation)
+            {
+                DrawingVisual dv = new DrawingVisual();
+                using (DrawingContext dc = dv.RenderOpen())
+                {
+                    VisualBrush vb = new VisualBrush(visualToRender);
+                    dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(), new System.Windows.Size(width, height)));
+                }
+                bmp.Render(dv);
+            }
+            else
+            {
+                bmp.Render(visualToRender);
+            }
+            return bmp;
+        }
+
+        private void RenderOverlay(object sender, EventArgs e)
         {
             System.Drawing.Rectangle screen = Screen.PrimaryScreen.Bounds;
 
@@ -193,8 +237,10 @@ namespace WinMediaPie
 
             System.Drawing.Brush brush = new SolidBrush(System.Drawing.Color.FromArgb(158, 255, 0, 0));
 
-            g.FillRectangle(brush, new System.Drawing.Rectangle(0, 0, screen.Right, screen.Bottom));
+            //g.FillRectangle(brush, new System.Drawing.Rectangle(0, 0, screen.Right, screen.Bottom));
 
+            g.DrawArc(Pens.Orange, new Rectangle(500, 500, 500, 500), 0, 90);
+            
             g.Dispose();
             ReleaseDC(IntPtr.Zero, desktop);
         }
