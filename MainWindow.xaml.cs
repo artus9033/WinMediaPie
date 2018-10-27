@@ -1,16 +1,10 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -19,10 +13,6 @@ namespace WinMediaPie
 {
     public partial class MainWindow : MetroWindow
     {
-        FloatingWindow floatingWindow;
-
-        public const int GWL_STYLE = (-16);
-        public IntPtr WS_VISIBLE = (IntPtr)0x10000000L;
 
         [DllImport("user32.dll")]
         static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -31,27 +21,15 @@ namespace WinMediaPie
         [DllImport("user32.dll")]
         static extern bool MoveWindow(IntPtr hWndChild, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
-        [DllImport("user32.dll", EntryPoint = "GetDC")]
-        public static extern IntPtr GetDC(IntPtr ptr);
-        [DllImport("user32.dll", EntryPoint = "ReleaseDC")]
-        public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDc);
-
-        public void windowedSndvol()
-        {/*
-            ProcessStartInfo psi = new ProcessStartInfo("sndvol.exe");
-            psi.WindowStyle = ProcessWindowStyle.Maximized;
-            psi.Arguments = "";
-            Process p = Process.Start(psi);
-            Thread.Sleep(500);
-            SetWindowLong(p.MainWindowHandle, GWL_STYLE, WS_VISIBLE);
-            SetParent(p.MainWindowHandle, sndvolPanel.Handle);
-            MoveWindow(p.MainWindowHandle, 0, 0, sndvolPanel.Width, sndvolPanel.Height, true);*/
-        }
-
         const string APP_ID = "WinMediaPie";
+
+        FloatingWindow floatingWindow;
 
         System.Windows.Forms.NotifyIcon notifyIcon = new System.Windows.Forms.NotifyIcon();
 
+        /// <summary>
+        /// Stores paths to icon assets
+        /// </summary>
         class AppPaths
         {
             public static string appTmpPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), APP_ID);
@@ -59,19 +37,14 @@ namespace WinMediaPie
             public static string iconIcoPath = System.IO.Path.Combine(AppPaths.appTmpPath, "icon.ico");
         }
 
+        /// <summary>
+        /// Creates a MainWindow displaying app settings and bootstrapping the whole application
+        /// </summary>
         public MainWindow()
         {
             this.PrepareFS();
 
             InitializeComponent();
-
-            /*
-            System.Windows.Forms.Timer timer;
-            timer = new System.Windows.Forms.Timer();
-            timer.Tick += new EventHandler(this.RenderOverlay);
-            timer.Interval = 40;
-            timer.Enabled = true;
-            */
 
             this.StateChanged += this.WindowStateChanged;
             this.Loaded += MainWindow_Loaded;
@@ -89,7 +62,7 @@ namespace WinMediaPie
             menuItemExit.Text = "Exit";
             menuItemExit.Click += new System.EventHandler(this.ExitClick);
 
-            this.notifyIcon.Icon = this.getIconFromFile(AppPaths.iconIcoPath);
+            this.notifyIcon.Icon = this.GetIconFromFile(AppPaths.iconIcoPath);
             this.notifyIcon.Visible = false;
             this.notifyIcon.Text = APP_ID;
             this.notifyIcon.DoubleClick += this.NotifyIconDoubleClicked;
@@ -98,38 +71,10 @@ namespace WinMediaPie
             this.floatingWindow = new FloatingWindow();
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.BeginInvoke((Action)delegate {
-                this.LetGo(true);
-            });
-        }
-
-        private void BringBack()
-        {
-            this.notifyIcon.Visible = false;
-            this.WindowState = WindowState.Minimized;
-            this.Show();
-            this.WindowState = WindowState.Normal;
-            this.Focus();
-            this.BringIntoView();
-            this.floatingWindow.HideAllWindows();
-            this.floatingWindow.Hide();
-            Debug.WriteLine("Bringing the window back...");
-        }
-
-        private void LetGo(bool hide = true)
-        {
-            this.notifyIcon.Visible = true;
-            if (hide)
-            {
-                this.Hide();
-                this.floatingWindow.Show();
-            }
-            this.Toast(" is running in background");
-            Debug.WriteLine("Hiding the window...");
-        }
-
+        /// <summary>
+        /// Shows a Windows 10 ModernUI toast notification
+        /// </summary>
+        /// <param name="text">The content of the toast</param>
         public void Toast(string text = "")
         {
             XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastImageAndText03);
@@ -147,6 +92,9 @@ namespace WinMediaPie
             ToastNotificationManager.CreateToastNotifier(APP_ID).Show(toast);
         }
 
+        /// <summary>
+        /// Unpacks app assets to a temporary directory
+        /// </summary>
         private void PrepareFS()
         {
             if (!Directory.Exists(AppPaths.appTmpPath))
@@ -161,6 +109,11 @@ namespace WinMediaPie
             this.EnsureUnpacked(iconIcoPackUri, AppPaths.iconIcoPath);
         }
 
+        /// <summary>
+        /// Makes sure an icon is unpacked to disk
+        /// </summary>
+        /// <param name="packUri">Pack URI under which the icon is accessible</param>
+        /// <param name="diskPath">Destination path on disk to which the icon is unpacked</param>
         private void EnsureUnpacked(Uri packUri, string diskPath)
         {
             StreamResourceInfo sourceInfo = System.Windows.Application.GetResourceStream(packUri);
@@ -170,88 +123,83 @@ namespace WinMediaPie
             ofstream.Close();
         }
 
-        private System.Drawing.Icon getIconFromFile(string path)
+        /// <summary>
+        /// Loads a <see cref="System.Drawing.Icon"/> from disk
+        /// </summary>
+        /// <param name="path">Path to the icon on disk</param>
+        /// <returns></returns>
+        private System.Drawing.Icon GetIconFromFile(string path)
         {
             return System.Drawing.Icon.FromHandle(new Bitmap(path).GetHicon());
         }
 
+        /// <summary>
+        /// Closes descendant floating windows, shows, maximizes and focuses this window
+        /// </summary>
+        private void PutToForeground()
+        {
+            this.notifyIcon.Visible = false;
+            this.WindowState = WindowState.Minimized;
+            this.Show();
+            this.WindowState = WindowState.Normal;
+            this.Focus();
+            this.BringIntoView();
+            this.floatingWindow.HideAllWindows();
+            this.floatingWindow.Hide();
+            Console.WriteLine("Bringing the window back to foreground...");
+        }
+
+
+        private void PutToBackground(bool hide = true)
+        {
+            this.notifyIcon.Visible = true;
+            if (hide)
+            {
+                this.Hide();
+                this.floatingWindow.Show();
+            }
+            this.Toast(" is running in background");
+            Console.WriteLine("Hiding the window to background...");
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.BeginInvoke((Action)delegate
+            {
+                this.PutToBackground(true);
+            });
+        }
+
         private void AboutClick(object sender, EventArgs e)
         {
-            Debug.WriteLine("Showing the 'about' dialog!");
+            Console.WriteLine("Showing the 'about' dialog!");
             this.ShowMessageAsync("About the app", "WinMediaPie developed by Morys, Janus & Pawlica", MessageDialogStyle.Affirmative);
         }
 
         private void ExitClick(object sender, EventArgs e)
         {
-            Debug.WriteLine("Exiting the app!");
+            Console.WriteLine("Exiting the app!");
             Environment.Exit(0);
         }
 
         private void NotifyIconDoubleClicked(object sender, EventArgs e)
         {
-            this.BringBack();
+            this.PutToForeground();
         }
 
         private void WindowStateChanged(object sender, EventArgs e)
         {
             if (this.WindowState == WindowState.Minimized)
             {
-                LetGo(false);
+                PutToBackground(false);
             }
         }
-        
+
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
 
-            LetGo(true);
-        }
-
-        public static BitmapSource CreateBitmapSourceFromVisual(
-           Double width,
-           Double height,
-           Visual visualToRender,
-           Boolean undoTransformation)
-        {
-            if (visualToRender == null)
-            {
-                return null;
-            }
-            RenderTargetBitmap bmp = new RenderTargetBitmap((Int32)Math.Ceiling(width),
-                (Int32)Math.Ceiling(height), 96, 96, PixelFormats.Pbgra32);
-
-            if (undoTransformation)
-            {
-                DrawingVisual dv = new DrawingVisual();
-                using (DrawingContext dc = dv.RenderOpen())
-                {
-                    VisualBrush vb = new VisualBrush(visualToRender);
-                    dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(), new System.Windows.Size(width, height)));
-                }
-                bmp.Render(dv);
-            }
-            else
-            {
-                bmp.Render(visualToRender);
-            }
-            return bmp;
-        }
-
-        private void RenderOverlay(object sender, EventArgs e)
-        {
-            System.Drawing.Rectangle screen = Screen.PrimaryScreen.Bounds;
-
-            IntPtr desktop = GetDC(IntPtr.Zero);
-            Graphics g = Graphics.FromHdc(desktop);
-
-            System.Drawing.Brush brush = new SolidBrush(System.Drawing.Color.FromArgb(158, 255, 0, 0));
-
-            //g.FillRectangle(brush, new System.Drawing.Rectangle(0, 0, screen.Right, screen.Bottom));
-
-            g.DrawArc(Pens.Orange, new Rectangle(500, 500, 500, 500), 0, 90);
-            
-            g.Dispose();
-            ReleaseDC(IntPtr.Zero, desktop);
+            PutToBackground(true);
         }
     }
 }

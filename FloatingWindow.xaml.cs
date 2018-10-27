@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation.Peers;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace WinMediaPie
 {
@@ -68,7 +54,8 @@ namespace WinMediaPie
         /// <summary>
         /// Hides the PieWindow and shows this floating window
         /// </summary>
-        private void ShowFloatingWindow() {
+        private void ShowFloatingWindow()
+        {
             this.pieWindow.Hide();
             this.Show();
             System.Drawing.Rectangle workArea = Common.Helpers.WindowHelpers.CurrentScreen(this).Bounds;
@@ -93,7 +80,7 @@ namespace WinMediaPie
             this.pieWindow.Show();
             this.IsBeingDisplayed = false;
         }
-        
+
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
@@ -110,7 +97,7 @@ namespace WinMediaPie
             int windowStyle = GetWindowLong(source.Handle, GWL_EXSTYLE);
             SetWindowLong(source.Handle, GWL_EXSTYLE, windowStyle | WS_EX_TOOLWINDOW);
         }
-        
+
         // Makes the window unmovable, neither maxibizable nor minimalizable & unresizable
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
