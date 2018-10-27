@@ -148,8 +148,7 @@ namespace WinMediaPie
             this.floatingWindow.Hide();
             Console.WriteLine("Bringing the window back to foreground...");
         }
-
-
+        
         private void PutToBackground(bool hide = true)
         {
             this.notifyIcon.Visible = true;

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace WinMediaPie
 {
@@ -17,6 +20,16 @@ namespace WinMediaPie
         public static extern int SetWindowLong(IntPtr window, int index, int value);
         [DllImport("user32.dll")]
         public static extern int GetWindowLong(IntPtr window, int index);
+        [DllImport("user32.dll", SetLastError = true)]
+#pragma warning disable IDE1006 // Style nazewnictwa
+        public static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
+#pragma warning restore IDE1006 // Style nazewnictwa
+
+        public const int VK_MEDIA_NEXT_TRACK = 0xB0;
+        public const int VK_MEDIA_PLAY_PAUSE = 0xB3;
+        public const int VK_MEDIA_PREV_TRACK = 0xB1;
+        public const int KEYEVENTF_EXTENDEDKEY = 0x0001; //Key down flag
+        public const int KEYEVENTF_KEYUP = 0x0002; //Key up flag
 
         private const int WM_SYSCOMMAND = 0x0112;
         private const int SC_MINIMIZE = 0xf020;
@@ -29,6 +42,8 @@ namespace WinMediaPie
         const int WS_EX_APPWINDOW = 0x00040000;
 
         private Action displayParent;
+        private Task closeSelfTask = null;
+        private int lastCloseSelfTaskId = -1;
 
         private NAudio.CoreAudioApi.MMDeviceEnumerator deviceEnum = new NAudio.CoreAudioApi.MMDeviceEnumerator();
         private NotificationClientImplementation notificationClient;
@@ -108,7 +123,25 @@ namespace WinMediaPie
         {
             base.OnMouseLeave(e);
 
-            this.Back();
+            Dispatcher d = Dispatcher.CurrentDispatcher;
+            var self = this;
+            Action action = ()=>
+            {
+                if (!self.IsMouseOver)
+                {
+                    this.Back();
+                }
+            };
+
+            this.closeSelfTask = new Task((thisTaskId) =>
+            {
+                System.Threading.Thread.Sleep(1500);
+                if (self.lastCloseSelfTaskId == (int) thisTaskId)
+                {
+                    d.BeginInvoke(action);
+                }
+            }, ++this.lastCloseSelfTaskId);
+            this.closeSelfTask.Start();
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -180,19 +213,24 @@ namespace WinMediaPie
             this.displayParent();
         }
 
+        private void SendKeyboardEvent(byte eventCode){
+            keybd_event(eventCode, 0, KEYEVENTF_EXTENDEDKEY, IntPtr.Zero);
+            keybd_event(eventCode, 0, KEYEVENTF_KEYUP, IntPtr.Zero);
+        }
+
         private void PreviousMediaClick(object sender, RoutedEventArgs e)
         {
-
+            SendKeyboardEvent(VK_MEDIA_PREV_TRACK);
         }
 
         private void NextMediaClick(object sender, RoutedEventArgs e)
         {
-
+            SendKeyboardEvent(VK_MEDIA_NEXT_TRACK);
         }
 
         private void PlayPauseMediaClick(object sender, RoutedEventArgs e)
         {
-
+            SendKeyboardEvent(VK_MEDIA_PLAY_PAUSE);
         }
     }
 }
