@@ -12,7 +12,7 @@
         WindowStartupLocation="Manual"
         AllowsTransparency="True"
         Title="FloatingWindow" Width="60" Height="90">
-    <Grid TouchDown="Click" MouseDown="Click">
+    <Grid TouchDown="TogglePie" MouseDown="TogglePie">
         <Grid.Background>
             <SolidColorBrush Color="#FFB0B0B0" Opacity="0.075"/>
         </Grid.Background>

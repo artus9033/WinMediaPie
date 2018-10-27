@@ -49,7 +49,7 @@
                 <Image x:Name="nextButton" VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/skip-next-circle-outline.png" />
             </Button>
         </Grid>
-        <Slider x:Name="glosnoscSlider" Minimum="0" Maximum="100" Margin="0, 10, 0, 10" Grid.Row="2" local:MouseWheelBehavior.Value="3" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+        <Slider x:Name="glosnoscSlider" Minimum="0" Maximum="100" Margin="0, 10, 0, 10" Grid.Row="2" local:MouseWheelBehavior.Value="12" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
         <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" TouchDown="Back" MouseDown="Back">
             <Grid.Background>
                 <SolidColorBrush Color="#FFB0B0B0" Opacity="0.0001"/>

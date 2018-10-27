@@ -59,6 +59,13 @@ namespace WinMediaPie
             notificationClient.Initialize();
         }
 
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            this.Back();
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);

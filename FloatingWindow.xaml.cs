@@ -44,22 +44,31 @@ namespace WinMediaPie
         private PieWindow pieWindow;
         private bool IsBeingDisplayed = false;
 
+        /// <summary>
+        /// Floating window that is an activator and wrapper for PieWindow
+        /// </summary>
         public FloatingWindow()
         {
             InitializeComponent();
 
             this.ShowInTaskbar = false;
-            this.pieWindow = new PieWindow(this.Display);
+            this.pieWindow = new PieWindow(this.ShowFloatingWindow);
 
-            this.Display();
+            this.ShowFloatingWindow();
         }
 
+        /// <summary>
+        /// Hides all descendant windows
+        /// </summary>
         public void HideAllWindows()
         {
-            this.Display();
+            this.ShowFloatingWindow();
         }
 
-        private void Display() {
+        /// <summary>
+        /// Hides the PieWindow and shows this floating window
+        /// </summary>
+        private void ShowFloatingWindow() {
             this.pieWindow.Hide();
             this.Show();
             System.Drawing.Rectangle workArea = Common.Helpers.WindowHelpers.CurrentScreen(this).Bounds;
@@ -68,7 +77,17 @@ namespace WinMediaPie
             this.IsBeingDisplayed = true;
         }
 
-        void LetGo()
+        protected override void OnMouseEnter(System.Windows.Input.MouseEventArgs e)
+        {
+            base.OnMouseEnter(e);
+
+            this.ShowPie();
+        }
+
+        /// <summary>
+        /// Hides this floating window and shows the PieWindow
+        /// </summary>
+        void ShowPie()
         {
             this.Hide();
             this.pieWindow.Show();
@@ -87,11 +106,12 @@ namespace WinMediaPie
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
             source.AddHook(WndProc);
 
-            //Make it gone frmo the ALT+TAB
+            // Make it gone frmo ALT+TAB
             int windowStyle = GetWindowLong(source.Handle, GWL_EXSTYLE);
             SetWindowLong(source.Handle, GWL_EXSTYLE, windowStyle | WS_EX_TOOLWINDOW);
         }
-
+        
+        // Makes the window unmovable, neither maxibizable nor minimalizable & unresizable
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg == WM_SYSCOMMAND)
@@ -106,19 +126,22 @@ namespace WinMediaPie
             return IntPtr.Zero;
         }
 
-        private void Click(object sender, TouchEventArgs e)
+        private void TogglePie(object sender, TouchEventArgs e)
         {
-            this.Click();
+            this.TogglePie();
         }
 
-        private void Click(object sender, System.Windows.Input.MouseEventArgs e)
+        private void TogglePie(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            this.Click();
+            this.TogglePie();
         }
 
-        private void Click()
+        /// <summary>
+        /// Toggles the visibility of PieWindow
+        /// </summary>
+        private void TogglePie()
         {
-            if (this.IsBeingDisplayed) this.LetGo(); else this.Display();
+            if (this.IsBeingDisplayed) this.ShowPie(); else this.ShowFloatingWindow();
             this.IsBeingDisplayed = !this.IsBeingDisplayed;
         }
     }
