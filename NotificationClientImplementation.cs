@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using NAudio.CoreAudioApi;
+﻿using NAudio.CoreAudioApi;
+using System;
 
 namespace WinMediaPie
 {
-    public class VolumeChangeEventArgs : EventArgs {
+    public class VolumeChangeEventArgs : EventArgs
+    {
         public float volumePercent;
         public bool isMuted;
     }
@@ -127,7 +123,8 @@ namespace WinMediaPie
             Console.WriteLine("New Volume {0}", data.MasterVolume);
             Console.WriteLine("Muted      {0}", data.Muted);
 
-            VolumeChange(this, new VolumeChangeEventArgs {
+            VolumeChange(this, new VolumeChangeEventArgs
+            {
                 volumePercent = data.MasterVolume * 100,
                 isMuted = data.Muted
             });

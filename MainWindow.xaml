@@ -19,8 +19,5 @@
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="10*"/>
         </Grid.ColumnDefinitions>
-        <!--<WindowsFormsHost Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <wf:Panel x:Name="sndvolPanel"/>
-        </WindowsFormsHost>-->
     </Grid>
 </Controls:MetroWindow>

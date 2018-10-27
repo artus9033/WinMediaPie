@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -29,7 +28,7 @@ namespace WinMediaPie
         const int WS_EX_TOOLWINDOW = 0x00000080;
         const int WS_EX_APPWINDOW = 0x00040000;
 
-        private Action display;
+        private Action displayParent;
 
         private NAudio.CoreAudioApi.MMDeviceEnumerator deviceEnum = new NAudio.CoreAudioApi.MMDeviceEnumerator();
         private NotificationClientImplementation notificationClient;
@@ -38,9 +37,13 @@ namespace WinMediaPie
         private bool isMuted;
         private float volumePercent;
 
-        public PieWindow(Action display)
+        /// <summary>
+        /// Creates a PieWindow
+        /// </summary>
+        /// <param name="displayParent">Callback to a function which hides this window and shows the parent window</param>
+        public PieWindow(Action displayParent)
         {
-            this.display = display;
+            this.displayParent = displayParent;
 
             InitializeComponent();
 
@@ -57,6 +60,48 @@ namespace WinMediaPie
             notifyClient = notificationClient;
             deviceEnum.RegisterEndpointNotificationCallback(notifyClient);
             notificationClient.Initialize();
+        }
+
+        /// <summary>
+        /// Mutes or unmutes the current audio playback device
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MuteOrUnmute(object sender, RoutedEventArgs e)
+        {
+            if (isMuted)
+            {
+                notificationClient.Unmute();
+            }
+            else
+            {
+                notificationClient.Mute();
+            }
+        }
+
+        /// <summary>
+        /// Updates the UI buttons and slider values
+        /// </summary>
+        private void UpdateUI()
+        {
+            var muted = isMuted;
+            var percent = volumePercent;
+            System.Windows.Application.Current.Dispatcher.Invoke(
+                () =>
+                {
+                    if (muted)
+                    {
+                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
+                        glosnoscSlider.IsEnabled = false;
+                    }
+                    else
+                    {
+                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
+                        glosnoscSlider.IsEnabled = true;
+                    }
+                    glosnoscSlider.Value = percent;
+                }
+            );
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -81,45 +126,12 @@ namespace WinMediaPie
             notificationClient.SetVolume((float)e.NewValue);
         }
 
-        private void MuteOrUnmute(object sender, RoutedEventArgs e)
-        {
-            if (isMuted)
-            {
-                notificationClient.Unmute();
-            }
-            else
-            {
-                notificationClient.Mute();
-            }
-        }
-
         private void NotificationClient_VolumeChange(object sender, VolumeChangeEventArgs e)
         {
             isMuted = e.isMuted;
             volumePercent = e.volumePercent;
 
             UpdateUI();
-        }
-
-        private void UpdateUI()
-        {
-            var muted = isMuted;
-            var percent = volumePercent;
-            System.Windows.Application.Current.Dispatcher.Invoke(
-                () => {
-                    if (muted)
-                    {
-                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
-                        glosnoscSlider.IsEnabled = false;
-                    }
-                    else
-                    {
-                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
-                        glosnoscSlider.IsEnabled = true;
-                    }
-                    glosnoscSlider.Value = percent;
-                }
-            );
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -165,7 +177,7 @@ namespace WinMediaPie
 
         private void Back()
         {
-            this.display();
+            this.displayParent();
         }
     }
 }
