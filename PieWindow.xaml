@@ -14,7 +14,7 @@
         Title="PieWindow" Height="450" Width="200">
     <Window.Background>
         <SolidColorBrush Color="#FFB0B0B0"
-                         Opacity="0.08" />
+                         Opacity="0.2" />
     </Window.Background>
     <Grid RenderTransformOrigin="0.5,0.5">
         <Grid.RowDefinitions>
@@ -23,7 +23,7 @@
             <RowDefinition Height="90*"/>
             <RowDefinition Height="15*"/>
         </Grid.RowDefinitions>
-        <Image Grid.Row="1" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Source="pack://application:,,,/Assets/speaker.png"/>
+        <Image Grid.Row="1" Width="50" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center" Source="pack://application:,,,/Assets/speaker.png"/>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10*"/>
