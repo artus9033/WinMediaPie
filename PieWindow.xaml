@@ -38,19 +38,19 @@
                 <ColumnDefinition Width="10*"/>
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
-            <Button Width="30" Height="30" Grid.Column="0">
+            <Button Click="PreviousMediaClick" Width="30" Height="30" Grid.Column="0">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#FFB0B0B0"/>
                 </Button.Background>
                 <Image x:Name="previousButton" VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/skip-previous-circle-outline.png" />
             </Button>
-            <Button Width="30" Height="30" Grid.Column="1">
+            <Button Click="PlayPauseMediaClick" Width="30" Height="30" Grid.Column="1">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#FFB0B0B0"/>
                 </Button.Background>
                 <Image x:Name="playPauseButton" VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/play-circle-outline.png" />
             </Button>
-            <Button Width="30" Height="30" Grid.Column="2">
+            <Button Click="NextMediaClick" Width="30" Height="30" Grid.Column="2">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#FFB0B0B0"/>
                 </Button.Background>

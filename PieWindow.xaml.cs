@@ -179,5 +179,20 @@ namespace WinMediaPie
         {
             this.displayParent();
         }
+
+        private void PreviousMediaClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NextMediaClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void PlayPauseMediaClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
