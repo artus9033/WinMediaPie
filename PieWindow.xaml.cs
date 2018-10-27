@@ -1,23 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation.Peers;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace WinMediaPie
 {
@@ -40,7 +27,15 @@ namespace WinMediaPie
         const int GWL_EXSTYLE = -20;
         const int WS_EX_TOOLWINDOW = 0x00000080;
         const int WS_EX_APPWINDOW = 0x00040000;
+
         private Action display;
+
+        private NAudio.CoreAudioApi.MMDeviceEnumerator deviceEnum = new NAudio.CoreAudioApi.MMDeviceEnumerator();
+        private NotificationClientImplementation notificationClient;
+        private NAudio.CoreAudioApi.Interfaces.IMMNotificationClient notifyClient;
+
+        private bool isMuted;
+        private float volumePercent;
 
         public PieWindow(Action display)
         {
@@ -53,6 +48,60 @@ namespace WinMediaPie
             this.Left = workArea.Width - this.Width;
 
             this.ShowInTaskbar = false;
+
+            glosnoscSlider.ValueChanged += GlosnoscSlider_ValueChanged;
+
+            notificationClient = new NotificationClientImplementation(deviceEnum);
+            notificationClient.VolumeChange += NotificationClient_VolumeChange;
+            notifyClient = notificationClient;
+            deviceEnum.RegisterEndpointNotificationCallback(notifyClient);
+            notificationClient.Initialize();
+        }
+
+        private void GlosnoscSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            notificationClient.SetVolume((float)e.NewValue);
+        }
+
+        private void MuteOrUnmute(object sender, RoutedEventArgs e)
+        {
+            if (isMuted)
+            {
+                notificationClient.Unmute();
+            }
+            else
+            {
+                notificationClient.Mute();
+            }
+        }
+
+        private void NotificationClient_VolumeChange(object sender, VolumeChangeEventArgs e)
+        {
+            isMuted = e.isMuted;
+            volumePercent = e.volumePercent;
+
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            var muted = isMuted;
+            var percent = volumePercent;
+            System.Windows.Application.Current.Dispatcher.Invoke(
+                () => {
+                    if (muted)
+                    {
+                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
+                        glosnoscSlider.IsEnabled = false;
+                    }
+                    else
+                    {
+                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
+                        glosnoscSlider.IsEnabled = true;
+                    }
+                    glosnoscSlider.Value = percent;
+                }
+            );
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -86,14 +135,19 @@ namespace WinMediaPie
             return IntPtr.Zero;
         }
 
-        private void Mute_Checked(object sender, RoutedEventArgs e)
+        private void Back(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
+            this.Back();
         }
 
-        private void Mute_Unchecked(object sender, RoutedEventArgs e)
+        private void Back(object sender, System.Windows.Input.TouchEventArgs e)
         {
-            muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
+            this.Back();
+        }
+
+        private void Back()
+        {
+            this.display();
         }
     }
 }

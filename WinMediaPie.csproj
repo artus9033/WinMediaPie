@@ -50,6 +50,9 @@
     <Reference Include="MahApps.Metro.IconPacks.Modern, Version=2.3.0.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\MahApps.Metro.IconPacks.Modern.2.3.0\lib\net46\MahApps.Metro.IconPacks.Modern.dll</HintPath>
     </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -93,6 +96,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NotificationClientImplementation.cs" />
     <Compile Include="PieWindow.xaml.cs">
       <DependentUpon>PieWindow.xaml</DependentUpon>
     </Compile>
@@ -147,6 +151,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\volume-high.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\play-circle-outline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\pause-circle-outline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\skip-next-circle-outline.png" />
+    <Resource Include="Assets\skip-previous-circle-outline.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
