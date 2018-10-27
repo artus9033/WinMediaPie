@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
@@ -56,6 +57,16 @@ namespace WinMediaPie
             notifyClient = notificationClient;
             deviceEnum.RegisterEndpointNotificationCallback(notifyClient);
             notificationClient.Initialize();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.Key.Equals(Key.Escape))
+            {
+                this.Back();
+            }
         }
 
         private void GlosnoscSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
