@@ -13,18 +13,10 @@
         AllowsTransparency="True"
         Title="PieWindow" Height="450" Width="200">
     <Window.Background>
-        <SolidColorBrush Color="#FFB0B0B0"
+        <SolidColorBrush Color="#ffd400"
                          Opacity="0.08" />
     </Window.Background>
     <Grid RenderTransformOrigin="0.5,0.5">
-        <Grid.RenderTransform>
-            <TransformGroup>
-                <ScaleTransform/>
-                <SkewTransform/>
-                <RotateTransform/>
-                <TranslateTransform/>
-            </TransformGroup>
-        </Grid.RenderTransform>
         <Grid.RowDefinitions>
             <RowDefinition Height="15*"/>
             <RowDefinition Height="20*"/>
