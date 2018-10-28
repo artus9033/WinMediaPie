@@ -20,10 +20,10 @@
             <EventTrigger RoutedEvent="Grid.MouseEnter">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="rozwin">
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="expand">
                             <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="0.9"/>
                         </DoubleAnimationUsingKeyFrames>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="rozwin">
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="expand">
                             <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="0.9"/>
                         </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
@@ -32,17 +32,17 @@
             <EventTrigger RoutedEvent="Grid.MouseLeave">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="rozwin">
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="expand">
                             <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
                         </DoubleAnimationUsingKeyFrames>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="rozwin">
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="expand">
                             <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
                         </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
         </Grid.Triggers>
-        <iconPacks:PackIconMaterial x:Name="rozwin" Opacity="0.5" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Kind="ChevronLeft">
+        <iconPacks:PackIconMaterial x:Name="expand" Opacity="0.5" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Kind="ChevronLeft">
             <iconPacks:PackIconMaterial.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>

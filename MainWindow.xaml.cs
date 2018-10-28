@@ -51,14 +51,28 @@ namespace WinMediaPie
 
             var components = new System.ComponentModel.Container();
             var contextMenu = new System.Windows.Forms.ContextMenu();
+            var menuItemSettings = new System.Windows.Forms.MenuItem();
+            var menuItemAbout = new System.Windows.Forms.MenuItem();
             var menuItemExit = new System.Windows.Forms.MenuItem();
 
-            // Initialize contextMenu1
+            // Initialize contextMenu
             contextMenu.MenuItems.AddRange(
-                        new System.Windows.Forms.MenuItem[] { menuItemExit });
+                        new System.Windows.Forms.MenuItem[] { menuItemSettings, menuItemAbout, menuItemExit });
 
-            // Initialize menuItem1
-            menuItemExit.Index = 0;
+            int menuItemIndex = -1;
+
+            // Initialize menuItemSettings
+            menuItemSettings.Index = ++menuItemIndex;
+            menuItemSettings.Text = "Settings";
+            menuItemSettings.Click += new System.EventHandler(this.SettingsClick);
+
+            // Initialize menuItemAbout
+            menuItemAbout.Index = ++menuItemIndex;
+            menuItemAbout.Text = "About";
+            menuItemAbout.Click += new System.EventHandler(this.AboutClick);
+
+            // Initialize menuItemExit
+            menuItemExit.Index = ++menuItemIndex;
             menuItemExit.Text = "Exit";
             menuItemExit.Click += new System.EventHandler(this.ExitClick);
 
@@ -138,17 +152,24 @@ namespace WinMediaPie
         /// </summary>
         private void PutToForeground()
         {
-            this.notifyIcon.Visible = false;
-            this.WindowState = WindowState.Minimized;
-            this.Show();
-            this.WindowState = WindowState.Normal;
-            this.Focus();
-            this.BringIntoView();
+            if (!this.IsVisible)
+            {
+                this.notifyIcon.Visible = false;
+                this.WindowState = WindowState.Minimized;
+                this.Show();
+                this.WindowState = WindowState.Normal;
+                this.Focus();
+                this.BringIntoView();
+            }
             this.floatingWindow.HideAllWindows();
             this.floatingWindow.Hide();
             Console.WriteLine("Bringing the window back to foreground...");
         }
         
+        /// <summary>
+        /// Hides this window and shows the floating ones instead
+        /// </summary>
+        /// <param name="hide">Whether to hide this window and force the FloatingWindow to be shown</param>
         private void PutToBackground(bool hide = true)
         {
             this.notifyIcon.Visible = true;
@@ -169,10 +190,22 @@ namespace WinMediaPie
             });
         }
 
+        private void DockToTrayClick(object sender, EventArgs e)
+        {
+            this.PutToBackground();
+        }
+
+        private void SettingsClick(object sender, EventArgs e)
+        {
+            Console.WriteLine("Showing the settings window!");
+            this.PutToForeground();
+        }
+
         private void AboutClick(object sender, EventArgs e)
         {
+            this.PutToForeground();
             Console.WriteLine("Showing the 'about' dialog!");
-            this.ShowMessageAsync("About the app", "WinMediaPie developed by Morys, Janus & Pawlica", MessageDialogStyle.Affirmative);
+            this.ShowMessageAsync("About the app", "WinMediaPie developed by artus9033, KamykO & Andrejov", MessageDialogStyle.Affirmative);
         }
 
         private void ExitClick(object sender, EventArgs e)

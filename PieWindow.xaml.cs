@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -44,6 +45,7 @@ namespace WinMediaPie
         private Action displayParent;
         private Task closeSelfTask = null;
         private int lastCloseSelfTaskId = -1;
+        int suppressVolSliderValueChanges = 0;
 
         private NAudio.CoreAudioApi.MMDeviceEnumerator deviceEnum = new NAudio.CoreAudioApi.MMDeviceEnumerator();
         private NotificationClientImplementation notificationClient;
@@ -68,7 +70,7 @@ namespace WinMediaPie
 
             this.ShowInTaskbar = false;
 
-            glosnoscSlider.ValueChanged += GlosnoscSlider_ValueChanged;
+            volumeSlider.ValueChanged += VolumeSlider_ValueChanged;
 
             notificationClient = new NotificationClientImplementation(deviceEnum);
             notificationClient.VolumeChange += NotificationClient_VolumeChange;
@@ -106,15 +108,16 @@ namespace WinMediaPie
                 {
                     if (muted)
                     {
-                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
-                        glosnoscSlider.IsEnabled = false;
+                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
+                        volumeSlider.IsEnabled = false;
                     }
                     else
                     {
-                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
-                        glosnoscSlider.IsEnabled = true;
+                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
+                        volumeSlider.IsEnabled = true;
                     }
-                    glosnoscSlider.Value = percent;
+                    suppressVolSliderValueChanges++;
+                    volumeSlider.Value = percent;
                 }
             );
         }
@@ -154,9 +157,16 @@ namespace WinMediaPie
             }
         }
 
-        private void GlosnoscSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            notificationClient.SetVolume((float)e.NewValue);
+            if (suppressVolSliderValueChanges > 0)
+            {
+                suppressVolSliderValueChanges--;
+            }
+            else
+            {
+                notificationClient.SetVolume((float)e.NewValue);
+            }
         }
 
         private void NotificationClient_VolumeChange(object sender, VolumeChangeEventArgs e)
