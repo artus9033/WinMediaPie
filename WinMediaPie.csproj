@@ -17,7 +17,7 @@
     <InstallUrl>http://artus9033.cba.pl/WinMediaPie/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -124,6 +124,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AutorunManager.cs" />
     <Compile Include="NotificationClientImplementation.cs" />
     <Compile Include="PieWindow.xaml.cs">
       <DependentUpon>PieWindow.xaml</DependentUpon>
