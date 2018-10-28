@@ -29,8 +29,8 @@ namespace WinMediaPie
         public const int VK_MEDIA_NEXT_TRACK = 0xB0;
         public const int VK_MEDIA_PLAY_PAUSE = 0xB3;
         public const int VK_MEDIA_PREV_TRACK = 0xB1;
-        public const int KEYEVENTF_EXTENDEDKEY = 0x0001; //Key down flag
-        public const int KEYEVENTF_KEYUP = 0x0002; //Key up flag
+        public const int KEYEVENTF_EXTENDEDKEY = 0x0001; // Key down flag
+        public const int KEYEVENTF_KEYUP = 0x0002; // Key up flag
 
         private const int WM_SYSCOMMAND = 0x0112;
         private const int SC_MINIMIZE = 0xf020;
@@ -41,6 +41,8 @@ namespace WinMediaPie
         const int GWL_EXSTYLE = -20;
         const int WS_EX_TOOLWINDOW = 0x00000080;
         const int WS_EX_APPWINDOW = 0x00040000;
+
+        private const int HIDE_WINDOW_DELAY = 600;
 
         private Action displayParent;
         private Task closeSelfTask = null;
@@ -138,7 +140,7 @@ namespace WinMediaPie
 
             this.closeSelfTask = new Task((thisTaskId) =>
             {
-                System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(HIDE_WINDOW_DELAY);
                 if (self.lastCloseSelfTaskId == (int) thisTaskId)
                 {
                     d.BeginInvoke(action);
