@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -71,7 +72,7 @@ namespace WinMediaPie
             this.Left = workArea.Width - this.Width;
 
             this.ShowInTaskbar = false;
-
+            
             volumeSlider.ValueChanged += VolumeSlider_ValueChanged;
 
             notificationClient = new NotificationClientImplementation(deviceEnum);
@@ -112,14 +113,19 @@ namespace WinMediaPie
                     {
                         muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
                         volumeSlider.IsEnabled = false;
+                        volumeText.Opacity = 0.7;
+                        volumeText.TextDecorations = new TextDecorationCollection(TextDecorations.Strikethrough);
                     }
                     else
                     {
                         muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
                         volumeSlider.IsEnabled = true;
+                        volumeText.Opacity = 1;
+                        volumeText.TextDecorations = new TextDecorationCollection();
                     }
                     suppressVolSliderValueChanges++;
                     volumeSlider.Value = percent;
+                    volumeText.Text = $"{(int) Math.Round(percent)}%";
                 }
             );
         }
@@ -148,7 +154,7 @@ namespace WinMediaPie
             }, ++this.lastCloseSelfTaskId);
             this.closeSelfTask.Start();
         }
-
+        
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -208,16 +214,6 @@ namespace WinMediaPie
             }
 
             return IntPtr.Zero;
-        }
-
-        private void Back(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            this.Back();
-        }
-
-        private void Back(object sender, System.Windows.Input.TouchEventArgs e)
-        {
-            this.Back();
         }
 
         private void Back()

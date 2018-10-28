@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:WinMediaPie"
         mc:Ignorable="d"
         Topmost="True"
@@ -11,7 +12,8 @@
         WindowStartupLocation="Manual"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         AllowsTransparency="True"
-        Title="PieWindow" Height="450" Width="200">
+        Title="PieWindow" Height="450" Width="200"
+        FocusManager.FocusedElement="{Binding ElementName=playPauseButton}">
     <Window.Background>
         <SolidColorBrush Color="#637592"
                          Opacity="0.25" />
@@ -20,6 +22,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="15*"/>
             <RowDefinition Height="20*"/>
+            <RowDefinition Height="10*"/>
             <RowDefinition Height="90*"/>
             <RowDefinition Height="15*"/>
         </Grid.RowDefinitions>
@@ -30,68 +33,28 @@
                 <ColumnDefinition Width="10*"/>
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
-            <Button Click="PreviousMediaClick" Width="30" Height="30" Grid.Column="0">
+            <Button Style="{DynamicResource MetroCircleButtonStyle}" Click="PreviousMediaClick" Width="40" Height="40" Grid.Column="0">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
                 <Image x:Name="previousButton" VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/skip-previous-circle-outline.png" />
             </Button>
-            <Button Click="PlayPauseMediaClick" Width="30" Height="30" Grid.Column="1">
+            <Button x:Name="playPauseButton" Style="{DynamicResource MetroCircleButtonStyle}" Click="PlayPauseMediaClick" Width="40" Height="40" Grid.Column="1">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
-                <Image x:Name="playPauseButton" VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/play-circle-outline.png" />
+                <Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/play-circle-outline.png" />
             </Button>
-            <Button Click="NextMediaClick" Width="30" Height="30" Grid.Column="2">
+            <Button Style="{DynamicResource MetroCircleButtonStyle}" Click="NextMediaClick" Width="40" Height="40" Grid.Column="2">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
                 <Image x:Name="nextButton" VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/skip-next-circle-outline.png" />
             </Button>
         </Grid>
-        <Slider x:Name="volumeSlider" Minimum="0" Maximum="100" Margin="0, 10, 0, 10" Grid.Row="2" local:MouseWheelBehavior.Value="12" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-        <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" TouchDown="Back" MouseDown="Back">
-            <Grid.Background>
-                <SolidColorBrush Color="#637592" Opacity="0.0001"/>
-            </Grid.Background>
-            <Grid.Triggers>
-                <EventTrigger RoutedEvent="Grid.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="collapse">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="0.9"/>
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="collapse">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="0.9"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Grid.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="collapse">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="collapse">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Grid.Triggers>
-            <iconPacks:PackIconMaterial x:Name="collapse" Opacity="0.5" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Kind="ChevronRight">
-                <iconPacks:PackIconMaterial.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </iconPacks:PackIconMaterial.RenderTransform>
-            </iconPacks:PackIconMaterial>
-        </Grid>
-        <Button Click="MuteOrUnmute" Width="30" Height="30" Grid.Row="3">
+        <TextBlock x:Name="volumeText" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="0%"/>
+        <Slider IsSnapToTickEnabled="True" TickFrequency="1" Style="{DynamicResource FlatSlider}" x:Name="volumeSlider" Minimum="0" Maximum="100" Margin="0, 10, 0, 10" Grid.Row="3" local:MouseWheelBehavior.Value="12" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+        <Button Style="{DynamicResource MetroCircleButtonStyle}" Click="MuteOrUnmute" Width="45" Height="45" Grid.Row="4">
             <Button.Background>
                 <SolidColorBrush Opacity="0.5" Color="#637592"/>
             </Button.Background>

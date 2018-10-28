@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Windows;
 using System.Windows.Resources;
 using Windows.Data.Xml.Dom;
@@ -165,7 +166,7 @@ namespace WinMediaPie
             this.floatingWindow.Hide();
             Console.WriteLine("Bringing the window back to foreground...");
         }
-        
+
         /// <summary>
         /// Hides this window and shows the floating ones instead
         /// </summary>
@@ -219,6 +220,16 @@ namespace WinMediaPie
             this.PutToForeground();
         }
 
+        private void AutostartLocalClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AutostartGlobalClick(object sender, EventArgs e)
+        {
+
+        }
+
         private void WindowStateChanged(object sender, EventArgs e)
         {
             if (this.WindowState == WindowState.Minimized)
@@ -232,6 +243,30 @@ namespace WinMediaPie
             e.Cancel = true;
 
             PutToBackground(true);
+        }
+
+        private void Autostartlocal_IsCheckedChanged(object sender, EventArgs e)
+        {
+            ToggleSwitch self = (ToggleSwitch)sender;
+
+            try
+            {
+                if ((bool)self.IsChecked)
+                {
+                    AutorunManager.AddToCurrentUserAutorun();
+                }
+                else
+                {
+                    AutorunManager.RemoveFromCurrentUserAutorun();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Revert the toggle, as the operation did not succeed
+                self.IsChecked = !(bool)self.IsChecked;
+                Console.WriteLine($"Error adding the app to the current user's autorun: {ex.ToString()}");
+                this.ShowMessageAsync("Oops, something went wrong", $"An unexpected error occured: {ex.ToString()}");
+            }
         }
     }
 }

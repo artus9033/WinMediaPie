@@ -6,13 +6,13 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:WinMediaPie"
         mc:Ignorable="d"
-        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Icon="Assets/icon.png"
         Title="WinMediaPie Settings"
-        Height="624.782"
-        Width="895.948">
+        Height="441.282"
+        Width="1055.781">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Click="DockToTrayClick">
@@ -51,7 +51,32 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="10*"/>
         </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="WinMediaPie Settings" FontSize="28" Margin="0,15,0,0" TextAlignment="Center"/>
+            <Line Margin="10"/>
+            <Separator Width="350"/>
+            <Line Margin="10"/>
+            <Controls:ToggleSwitch IsCheckedChanged="Autostartlocal_IsCheckedChanged" OnLabel="On" OffLabel="Off" x:Name="autostartlocal" Width="300" Header="Autorun for this user" />
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="20*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            <Controls:Tile Click="DockToTrayClick" Grid.Row="0" Grid.Column="0" Title="Dock to tray" Width="120" Height="120">
+                <iconPacks:Material Width="46" Height="46" Kind="EyeOffOutline"/>
+            </Controls:Tile>
+            <Controls:Tile Click="AboutClick" Grid.Row="0" Grid.Column="1" Title="About the app" Width="120" Height="120">
+                <iconPacks:Material Width="46" Height="46" Kind="InformationOutline"/>
+            </Controls:Tile>
+            <Controls:Tile Click="ExitClick" Grid.Row="0" Grid.Column="2" Title="Quit the app" Width="120" Height="120">
+                <iconPacks:Material Width="46" Height="46" Kind="Power"/>
+            </Controls:Tile>
+        </Grid>
     </Grid>
 </Controls:MetroWindow>
