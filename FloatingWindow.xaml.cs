@@ -12,6 +12,7 @@ namespace WinMediaPie
     /// </summary>
     public partial class FloatingWindow : Window
     {
+
         [DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr window, int index, int value);
         [DllImport("user32.dll")]
@@ -30,6 +31,8 @@ namespace WinMediaPie
         private PieWindow pieWindow;
         private bool IsBeingDisplayed = false;
 
+        private bool IsFirstExposure = true;
+
         /// <summary>
         /// Floating window that is an activator and wrapper for PieWindow
         /// </summary>
@@ -40,7 +43,22 @@ namespace WinMediaPie
             this.ShowInTaskbar = false;
             this.pieWindow = new PieWindow(this.ShowFloatingWindow);
 
+            // First display the floating window anyway, to position it properly
             this.ShowFloatingWindow();
+        }
+
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+
+            if (IsFirstExposure)
+            {
+                if (this.pieWindow.ShouldBeDisplayedInitially())
+                {
+                    this.ShowPie();
+                }
+                IsFirstExposure = false;
+            }
         }
 
         /// <summary>
@@ -76,8 +94,17 @@ namespace WinMediaPie
         /// </summary>
         void ShowPie()
         {
-            this.Hide();
+            this.pieWindow.WindowState = WindowState.Minimized;
             this.pieWindow.Show();
+            this.pieWindow.WindowState = WindowState.Normal;
+            this.pieWindow.BringIntoView();
+            this.pieWindow.Focus();
+            HideSelf();
+        }
+
+        void HideSelf()
+        {
+            this.Hide();
             this.IsBeingDisplayed = false;
         }
 

@@ -11,6 +11,7 @@
         mc:Ignorable="d"
         Icon="Assets/icon.png"
         Title="WinMediaPie Settings"
+        AllowsTransparency="True"
         Height="441.282"
         Width="1055.781">
     <Controls:MetroWindow.RightWindowCommands>

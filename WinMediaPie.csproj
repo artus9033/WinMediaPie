@@ -78,8 +78,8 @@
     <Reference Include="MahApps.Metro.IconPacks, Version=2.3.0.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\MahApps.Metro.IconPacks.2.3.0\lib\net46\MahApps.Metro.IconPacks.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -112,6 +112,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SampleAggregator.cs" />
     <Page Include="PieWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -186,22 +187,6 @@
     <Resource Include="Assets\speaker.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\volume-off.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\volume-high.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\play-circle-outline.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\pause-circle-outline.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\skip-next-circle-outline.png" />
-    <Resource Include="Assets\skip-previous-circle-outline.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.6.1 %28x86 i x64%29</ProductName>
@@ -218,6 +203,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\pin-off.png" />
+    <Resource Include="Assets\pin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\volume-high.png" />
+    <Resource Include="Assets\volume-off.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
