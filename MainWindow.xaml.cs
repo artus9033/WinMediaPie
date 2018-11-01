@@ -177,7 +177,7 @@ namespace WinMediaPie
             if (hide)
             {
                 this.Hide();
-                this.floatingWindow.Show();
+                this.floatingWindow.ShowSelfOrPie();
             }
             this.Toast(" is running in background");
             Console.WriteLine("Hiding the window to background...");

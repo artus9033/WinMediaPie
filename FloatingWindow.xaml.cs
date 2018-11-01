@@ -31,8 +31,6 @@ namespace WinMediaPie
         private PieWindow pieWindow;
         private bool IsBeingDisplayed = false;
 
-        private bool IsFirstExposure = true;
-
         /// <summary>
         /// Floating window that is an activator and wrapper for PieWindow
         /// </summary>
@@ -43,21 +41,18 @@ namespace WinMediaPie
             this.ShowInTaskbar = false;
             this.pieWindow = new PieWindow(this.ShowFloatingWindow);
 
-            // First display the floating window anyway, to position it properly
-            this.ShowFloatingWindow();
+            this.ShowSelfOrPie();
         }
 
-        protected override void OnContentRendered(EventArgs e)
+        internal void ShowSelfOrPie()
         {
-            base.OnContentRendered(e);
-
-            if (IsFirstExposure)
+            if (this.pieWindow.ShouldBeDisplayedInitially())
             {
-                if (this.pieWindow.ShouldBeDisplayedInitially())
-                {
-                    this.ShowPie();
-                }
-                IsFirstExposure = false;
+                this.ShowPie();
+            }
+            else
+            {
+                this.ShowFloatingWindow();
             }
         }
 
