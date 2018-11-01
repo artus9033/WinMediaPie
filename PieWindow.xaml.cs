@@ -1,23 +1,60 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace WinMediaPie
 {
     /// <summary>
-    /// Logika interakcji dla klasy PieWindow.xaml
+    /// PieWindow logic
     /// </summary>
     public partial class PieWindow : Window
     {
+
+        // Aero Glass externs
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WindowCompositionAttributeData
+        {
+            public WindowCompositionAttribute Attribute;
+            public IntPtr Data;
+            public int SizeOfData;
+        }
+
+        internal enum WindowCompositionAttribute
+        {
+            // ...
+            WCA_ACCENT_POLICY = 19
+            // ...
+        }
+
+        internal enum AccentState
+        {
+            ACCENT_DISABLED = 0,
+            ACCENT_ENABLE_GRADIENT = 1,
+            ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+            ACCENT_ENABLE_BLURBEHIND = 3,
+            ACCENT_INVALID_STATE = 4
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct AccentPolicy
+        {
+            public AccentState AccentState;
+            public int AccentFlags;
+            public int GradientColor;
+            public int AnimationId;
+        }
+
         [DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr window, int index, int value);
         [DllImport("user32.dll")]
@@ -57,6 +94,16 @@ namespace WinMediaPie
         private bool isMuted;
         private float volumePercent;
 
+        private IWaveIn waveIn;
+        private static int fftLength = 8192; // NAudio fft wants powers of two!
+
+        private SampleAggregator sampleAggregator = new SampleAggregator(fftLength);
+
+        public bool ShouldBeDisplayedInitially()
+        {
+            return (bool) Properties.Settings.Default.RememberKeepPieWindowOpen;
+        }
+
         /// <summary>
         /// Creates a PieWindow
         /// </summary>
@@ -67,12 +114,14 @@ namespace WinMediaPie
 
             InitializeComponent();
 
+            keepMeOpenToggleButton.IsChecked = Properties.Settings.Default.RememberKeepPieWindowOpen;
+
             System.Drawing.Rectangle workArea = Common.Helpers.WindowHelpers.CurrentScreen(this).Bounds;
             this.Top = workArea.Height * 0.5 - this.Height / 2;
             this.Left = workArea.Width - this.Width;
 
             this.ShowInTaskbar = false;
-            
+
             volumeSlider.ValueChanged += VolumeSlider_ValueChanged;
 
             notificationClient = new NotificationClientImplementation(deviceEnum);
@@ -80,6 +129,56 @@ namespace WinMediaPie
             notifyClient = notificationClient;
             deviceEnum.RegisterEndpointNotificationCallback(notifyClient);
             notificationClient.Initialize();
+
+            sampleAggregator.FftCalculated += new EventHandler<FftEventArgs>(FftCalculated);
+            sampleAggregator.PerformFFT = true;
+
+            waveIn = new WasapiLoopbackCapture();
+
+            waveIn.DataAvailable += OnDataAvailable;
+
+            waveIn.StartRecording();
+        }
+
+        internal void EnableBlur()
+        {
+            var windowHelper = new WindowInteropHelper(this);
+
+            var accent = new AccentPolicy();
+            var accentStructSize = Marshal.SizeOf(accent);
+            accent.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
+
+            var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+            Marshal.StructureToPtr(accent, accentPtr, false);
+
+            var data = new WindowCompositionAttributeData
+            {
+                Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
+                SizeOfData = accentStructSize,
+                Data = accentPtr
+            };
+
+            SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+
+            Marshal.FreeHGlobal(accentPtr);
+        }
+
+        void OnDataAvailable(object sender, WaveInEventArgs e)
+        {
+            byte[] buffer = e.Buffer;
+            int bytesRecorded = e.BytesRecorded;
+            int bufferIncrement = waveIn.WaveFormat.BlockAlign;
+
+            for (int index = 0; index < bytesRecorded; index += bufferIncrement)
+            {
+                float sample32 = BitConverter.ToSingle(buffer, index);
+                sampleAggregator.Add(sample32);
+            }
+        }
+
+        void FftCalculated(object sender, FftEventArgs e)
+        {
+            // TODO: do something with e.result
         }
 
         /// <summary>
@@ -125,7 +224,7 @@ namespace WinMediaPie
                     }
                     suppressVolSliderValueChanges++;
                     volumeSlider.Value = percent;
-                    volumeText.Text = $"{(int) Math.Round(percent)}%";
+                    volumeText.Text = $"{(int)Math.Round(percent)}%";
                 }
             );
         }
@@ -136,9 +235,9 @@ namespace WinMediaPie
 
             Dispatcher d = Dispatcher.CurrentDispatcher;
             var self = this;
-            Action action = ()=>
+            Action action = () =>
             {
-                if (!self.IsMouseOver)
+                if (!self.IsMouseOver && (bool)!self.keepMeOpenToggleButton.IsChecked)
                 {
                     this.Back();
                 }
@@ -147,14 +246,14 @@ namespace WinMediaPie
             this.closeSelfTask = new Task((thisTaskId) =>
             {
                 System.Threading.Thread.Sleep(HIDE_WINDOW_DELAY);
-                if (self.lastCloseSelfTaskId == (int) thisTaskId)
+                if (self.lastCloseSelfTaskId == (int)thisTaskId)
                 {
                     d.BeginInvoke(action);
                 }
             }, ++this.lastCloseSelfTaskId);
             this.closeSelfTask.Start();
         }
-        
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -191,6 +290,22 @@ namespace WinMediaPie
             base.OnClosing(e);
         }
 
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            if (this.IsVisible)
+            {
+                this.EnableBlur();
+
+                if (!this.IsFocused)
+                {
+                    this.Focus();
+                    playPauseButton.Focus();
+                }
+            }
+        }
+
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
@@ -221,7 +336,8 @@ namespace WinMediaPie
             this.displayParent();
         }
 
-        private void SendKeyboardEvent(byte eventCode){
+        private void SendKeyboardEvent(byte eventCode)
+        {
             keybd_event(eventCode, 0, KEYEVENTF_EXTENDEDKEY, IntPtr.Zero);
             keybd_event(eventCode, 0, KEYEVENTF_KEYUP, IntPtr.Zero);
         }
@@ -239,6 +355,12 @@ namespace WinMediaPie
         private void PlayPauseMediaClick(object sender, RoutedEventArgs e)
         {
             SendKeyboardEvent(VK_MEDIA_PLAY_PAUSE);
+        }
+
+        private void KeepMeOpenToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.RememberKeepPieWindowOpen = (bool) keepMeOpenToggleButton.IsChecked;
+            Properties.Settings.Default.Save();
         }
     }
 }
