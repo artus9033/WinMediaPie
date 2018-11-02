@@ -50,6 +50,18 @@ namespace WinMediaPie
             this.StateChanged += this.WindowStateChanged;
             this.Loaded += MainWindow_Loaded;
 
+            if (AutorunManager.IsAlreadyAddedToCurrentUserStartup() || AutorunManager.IsAlreadyAddedToAllUsersStartup())
+            {
+                autostartlocal.IsChecked = true;
+            }
+            
+            this.InitializeContextMenu();
+
+            this.floatingWindow = new FloatingWindow();
+        }
+
+        private void InitializeContextMenu()
+        {
             var components = new System.ComponentModel.Container();
             var contextMenu = new System.Windows.Forms.ContextMenu();
             var menuItemSettings = new System.Windows.Forms.MenuItem();
@@ -82,8 +94,6 @@ namespace WinMediaPie
             this.notifyIcon.Text = APP_ID;
             this.notifyIcon.DoubleClick += this.NotifyIconDoubleClicked;
             this.notifyIcon.ContextMenu = contextMenu;
-
-            this.floatingWindow = new FloatingWindow();
         }
 
         /// <summary>
@@ -218,16 +228,6 @@ namespace WinMediaPie
         private void NotifyIconDoubleClicked(object sender, EventArgs e)
         {
             this.PutToForeground();
-        }
-
-        private void AutostartLocalClick(object sender, EventArgs e)
-        {
-
-        }
-
-        private void AutostartGlobalClick(object sender, EventArgs e)
-        {
-
         }
 
         private void WindowStateChanged(object sender, EventArgs e)
