@@ -47,7 +47,7 @@
                 <ColumnDefinition Width="10*"/>
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
-            <Button Style="{DynamicResource MetroCircleButtonStyle}" Click="PreviousMediaClick" Width="40" Height="40" Grid.Column="0">
+            <Button x:Name="previousMediaButton" Style="{DynamicResource MetroCircleButtonStyle}" Click="PreviousMediaClick" Width="40" Height="40" Grid.Column="0">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
@@ -71,7 +71,7 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
-            <Button Style="{DynamicResource MetroCircleButtonStyle}" Click="NextMediaClick" Width="40" Height="40" Grid.Column="2">
+            <Button x:Name="nextMediaButton" Style="{DynamicResource MetroCircleButtonStyle}" Click="NextMediaClick" Width="40" Height="40" Grid.Column="2">
                 <Button.Background>
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
@@ -104,7 +104,7 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </ToggleButton>
-        <Button Style="{DynamicResource MetroCircleButtonStyle}" Click="MuteOrUnmute" Width="45" Height="45" Grid.Row="4">
+        <Button x:Name="muteButton" Style="{DynamicResource MetroCircleButtonStyle}" Click="MuteOrUnmute" Width="45" Height="45" Grid.Row="4">
             <Button.Background>
                 <SolidColorBrush Opacity="0.5" Color="#637592"/>
             </Button.Background>

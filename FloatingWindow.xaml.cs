@@ -14,6 +14,11 @@ namespace WinMediaPie
     {
 
         [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr window, int index, int value);
         [DllImport("user32.dll")]
         public static extern int GetWindowLong(IntPtr window, int index);
@@ -31,11 +36,15 @@ namespace WinMediaPie
         private PieWindow pieWindow;
         private bool IsBeingDisplayed = false;
 
+        private IntPtr PreviousForegroundWindow;
+
         /// <summary>
         /// Floating window that is an activator and wrapper for PieWindow
         /// </summary>
         public FloatingWindow()
         {
+            PreviousForegroundWindow = GetForegroundWindow();
+
             InitializeComponent();
 
             this.ShowInTaskbar = false;
@@ -69,6 +78,7 @@ namespace WinMediaPie
         /// </summary>
         private void ShowFloatingWindow()
         {
+            SetForegroundWindow(PreviousForegroundWindow);
             this.pieWindow.Hide();
             this.Show();
             System.Drawing.Rectangle workArea = Common.Helpers.WindowHelpers.CurrentScreen(this).Bounds;
@@ -89,6 +99,7 @@ namespace WinMediaPie
         /// </summary>
         void ShowPie()
         {
+            PreviousForegroundWindow = GetForegroundWindow();
             this.pieWindow.WindowState = WindowState.Minimized;
             this.pieWindow.Show();
             this.pieWindow.WindowState = WindowState.Normal;
