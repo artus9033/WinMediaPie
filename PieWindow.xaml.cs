@@ -96,6 +96,8 @@ namespace WinMediaPie
         private bool isMuted;
         private float volumePercent;
 
+        private IInputElement lastFocusedElement;
+
         private IWaveIn waveIn;
         private static int fftLength = 8192; // NAudio fft wants powers of two!
 
@@ -115,6 +117,13 @@ namespace WinMediaPie
             this.displayParent = displayParent;
 
             InitializeComponent();
+
+            lastFocusedElement = playPauseButton;
+
+            playPauseButton.GotKeyboardFocus += HandleNewElementFocused;
+            previousMediaButton.GotKeyboardFocus += HandleNewElementFocused;
+            nextMediaButton.GotKeyboardFocus += HandleNewElementFocused;
+            muteButton.GotKeyboardFocus += HandleNewElementFocused;
 
             keepMeOpenToggleButton.IsChecked = Properties.Settings.Default.RememberKeepPieWindowOpen;
 
@@ -141,7 +150,12 @@ namespace WinMediaPie
 
             waveIn.StartRecording();
         }
-        
+
+        internal void HandleNewElementFocused(object sender, RoutedEventArgs e)
+        {
+            lastFocusedElement = (IInputElement) sender;
+        }
+
         internal void EnableBlur()
         {
             var windowHelper = new WindowInteropHelper(this);
@@ -300,10 +314,11 @@ namespace WinMediaPie
             {
                 this.EnableBlur();
 
-                if (!this.IsFocused)
+                if (Keyboard.FocusedElement != lastFocusedElement)
                 {
+                    this.Activate();
                     this.Focus();
-                    playPauseButton.Focus();
+                    Keyboard.Focus(lastFocusedElement);
                 }
             }
         }
