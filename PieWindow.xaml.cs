@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Windows.Media;
 
 namespace WinMediaPie
 {
@@ -139,7 +140,7 @@ namespace WinMediaPie
 
             waveIn.StartRecording();
         }
-
+        
         internal void EnableBlur()
         {
             var windowHelper = new WindowInteropHelper(this);
