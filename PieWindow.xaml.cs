@@ -12,6 +12,7 @@ using Windows.Media;
 
 namespace WinMediaPie
 {
+
     /// <summary>
     /// PieWindow logic
     /// </summary>
