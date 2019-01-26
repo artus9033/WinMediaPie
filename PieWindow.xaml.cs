@@ -1,5 +1,4 @@
-﻿using NAudio.Wave;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Windows.Media;
 
 namespace WinMediaPie
 {
@@ -98,11 +96,6 @@ namespace WinMediaPie
 
         private UIElement lastFocusedElement;
 
-        private IWaveIn waveIn;
-        private static int fftLength = 8192; // NAudio fft wants powers of two!
-
-        private SampleAggregator sampleAggregator = new SampleAggregator(fftLength);
-
         public bool ShouldBeDisplayedInitially()
         {
             return (bool) Properties.Settings.Default.RememberKeepPieWindowOpen;
@@ -140,15 +133,6 @@ namespace WinMediaPie
             notifyClient = notificationClient;
             deviceEnum.RegisterEndpointNotificationCallback(notifyClient);
             notificationClient.Initialize();
-
-            sampleAggregator.FftCalculated += new EventHandler<FftEventArgs>(FftCalculated);
-            sampleAggregator.PerformFFT = true;
-
-            waveIn = new WasapiLoopbackCapture();
-
-            waveIn.DataAvailable += OnDataAvailable;
-
-            waveIn.StartRecording();
         }
 
         internal void HandleNewElementFocused(object sender, RoutedEventArgs e)
@@ -177,24 +161,6 @@ namespace WinMediaPie
             SetWindowCompositionAttribute(windowHelper.Handle, ref data);
 
             Marshal.FreeHGlobal(accentPtr);
-        }
-
-        void OnDataAvailable(object sender, WaveInEventArgs e)
-        {
-            byte[] buffer = e.Buffer;
-            int bytesRecorded = e.BytesRecorded;
-            int bufferIncrement = waveIn.WaveFormat.BlockAlign;
-
-            for (int index = 0; index < bytesRecorded; index += bufferIncrement)
-            {
-                float sample32 = BitConverter.ToSingle(buffer, index);
-                sampleAggregator.Add(sample32);
-            }
-        }
-
-        void FftCalculated(object sender, FftEventArgs e)
-        {
-            // TODO: do something with e.result
         }
 
         /// <summary>
