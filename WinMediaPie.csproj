@@ -17,7 +17,7 @@
     <InstallUrl>http://artus9033.cba.pl/WinMediaPie/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>17</ApplicationRevision>
+    <ApplicationRevision>18</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -134,7 +134,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="PieWindowConstants.cs" />
-    <Compile Include="SampleAggregator.cs" />
     <Page Include="PieWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
