@@ -102,19 +102,25 @@ namespace WinMediaPie
         /// <param name="text">The content of the toast</param>
         public void Toast(string text = "")
         {
-            XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastImageAndText03);
+            try
+            {
+                XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastImageAndText03);
 
-            XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
+                XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
 
-            stringElements[0].AppendChild(toastXml.CreateTextNode(APP_ID));
-            stringElements[0].AppendChild(toastXml.CreateTextNode(text));
+                stringElements[0].AppendChild(toastXml.CreateTextNode(APP_ID));
+                stringElements[0].AppendChild(toastXml.CreateTextNode(text));
 
-            XmlNodeList imageElements = toastXml.GetElementsByTagName("image");
-            imageElements[0].Attributes.GetNamedItem("src").NodeValue = AppPaths.iconPngPath;
+                XmlNodeList imageElements = toastXml.GetElementsByTagName("image");
+                imageElements[0].Attributes.GetNamedItem("src").NodeValue = AppPaths.iconPngPath;
 
-            ToastNotification toast = new ToastNotification(toastXml);
+                ToastNotification toast = new ToastNotification(toastXml);
 
-            ToastNotificationManager.CreateToastNotifier(APP_ID).Show(toast);
+                ToastNotificationManager.CreateToastNotifier(APP_ID).Show(toast);
+            }catch(Exception e)
+            {
+                Console.WriteLine($"Błąd podczas pokazywania powiadomienia: {e.ToString()}");
+            }
         }
 
         /// <summary>
