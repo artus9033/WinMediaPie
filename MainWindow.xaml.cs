@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Resources;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
+using System.Runtime;
 
 namespace WinMediaPie
 {
@@ -194,9 +195,10 @@ namespace WinMediaPie
             {
                 this.Hide();
                 this.floatingWindow.ShowSelfOrPie();
+
+                this.Toast(" is running in background");
+                Console.WriteLine("Hiding the window to background...");
             }
-            this.Toast(" is running in background");
-            Console.WriteLine("Hiding the window to background...");
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -222,7 +224,7 @@ namespace WinMediaPie
         {
             this.PutToForeground();
             Console.WriteLine("Showing the 'about' dialog!");
-            this.ShowMessageAsync("About the app", "WinMediaPie developed by artus9033, KamykO & Andrejov", MessageDialogStyle.Affirmative);
+            this.ShowMessageAsync("About the app", "WinMediaPie - a simple floating media control sidebar developed by artus9033", MessageDialogStyle.Affirmative);
         }
 
         private void ExitClick(object sender, EventArgs e)
