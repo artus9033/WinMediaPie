@@ -25,7 +25,7 @@ jobs:
         run: msbuild -t:restore
 
       - name: Build for platform ${{ matrix.release-platform }}
-        run: msbuild WinMediaPie.csproj /p:Configuration=Release /p:Platform=${{ matrix.release-platform }}
+        run: msbuild WinMediaPie.csproj /p:Configuration=Release /p:Platform=${{ matrix.release-platform }} /verbosity:d
 
       - name: Get WinMediaPie version
         uses: naminodarie/get-net-sdk-project-versions-action@v1
