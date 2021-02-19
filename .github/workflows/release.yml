@@ -38,6 +38,12 @@ jobs:
           recursive: true
           dest: WinMediaPie-${{ steps.tagName.outputs.tag }}-${{ matrix.release-platform }}.zip
 
+      - name: Upload ZIP with artifacts for ${{ matrix.release-platform }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: matrix.release-platform
+          path: math-homework.txt
+
       - name: List artifacts
         run: dir
 
@@ -45,6 +51,14 @@ jobs:
     runs-on: windows-latest
     needs: [build]
     steps:
+      - name: Download x86 artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: x86
+      - name: Download x64 artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: x64
       - name: Release ${{ steps.tagName.outputs.tag }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -53,7 +67,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            WinMediaPie-${{ steps.tagName.outputs.tag }}-x64.zip
             WinMediaPie-${{ steps.tagName.outputs.tag }}-x86.zip
+            WinMediaPie-${{ steps.tagName.outputs.tag }}-x64.zip
         env:
           CI: true
