@@ -1,0 +1,50 @@
+name: Release WinMediaPie
+
+on:
+  create:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        release-platform: ["x86", "x64"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Build for platform ${{ matrix.release-platform }}"
+        run: msbuild WinMediaPie.csproj /p:Configuration=Release /p:Platform=${{ matrix.release-platform }}
+
+      - name: Get WinMediaPie version
+        uses: naminodarie/get-net-sdk-project-versions-action@v1
+        id: get-version
+        with:
+          proj-path: WinMediaPie.csproj
+
+      - name: ZIP build artifacts
+        uses: papeloto/action-zip@v1
+        with:
+          files: bin/${{matrix.release-platform}}/Release/
+          recursive: true
+          dest: dist/WinMediaPie-${{ steps.get-version.outputs.version }}-${{ matrix.release-platform }}.zip
+
+  publish:
+    needs: [build]
+    steps:
+      - name: Release ${{ steps.get-version.outputs.version }}
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          title: ${{ steps.get-version.outputs.version }}
+          automatic_release_tag: "latest"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            dist/*.zip
+        env:
+          CI: true
