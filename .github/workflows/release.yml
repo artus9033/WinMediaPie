@@ -44,10 +44,10 @@ jobs:
     runs-on: windows-latest
     needs: [build]
     steps:
-      - name: Release ${{ jobs.build.steps.get-version.outputs.version }}
+      - name: Release ${{ steps.get-version.outputs.version }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          title: ${{ jobs.build.steps.get-version.outputs.version }}
+          title: ${{ steps.get-version.outputs.version }}
           automatic_release_tag: "latest"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
