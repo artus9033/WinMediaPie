@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: matrix.release-platform
-          path: math-homework.txt
+          path: WinMediaPie-${{ steps.tagName.outputs.tag }}-${{ matrix.release-platform }}.zip
 
   publish:
     runs-on: windows-latest
