@@ -15,6 +15,10 @@ jobs:
         release-platform: ["x86", "x64"]
 
     steps:
+      - name: Extract tag name
+        uses: olegtarasov/get-tag@v2.1
+        id: tagName
+
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
 
@@ -27,27 +31,21 @@ jobs:
       - name: Build for platform ${{ matrix.release-platform }}
         run: msbuild WinMediaPie.csproj /p:Configuration=Release /p:Platform=${{ matrix.release-platform }} /verbosity:d
 
-      - name: Get WinMediaPie version
-        uses: naminodarie/get-net-sdk-project-versions-action@v1
-        id: get-version
-        with:
-          proj-path: WinMediaPie.csproj
-
       - name: ZIP build artifacts
         uses: papeloto/action-zip@v1
         with:
           files: bin/${{matrix.release-platform}}/Release/
           recursive: true
-          dest: dist/WinMediaPie-${{ steps.get-version.outputs.version }}-${{ matrix.release-platform }}.zip
+          dest: dist/WinMediaPie-${{ steps.tagName.outputs.tag }}-${{ matrix.release-platform }}.zip
 
   publish:
     runs-on: windows-latest
     needs: [build]
     steps:
-      - name: Release ${{ steps.get-version.outputs.version }}
+      - name: Release ${{ steps.tagName.outputs.tag }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          title: ${{ steps.get-version.outputs.version }}
+          title: ${{ steps.tagName.outputs.tag }}
           automatic_release_tag: "latest"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
