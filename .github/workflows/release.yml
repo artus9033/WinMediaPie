@@ -38,6 +38,9 @@ jobs:
           recursive: true
           dest: WinMediaPie-${{ steps.tagName.outputs.tag }}-${{ matrix.release-platform }}.zip
 
+      - name: List artifacts
+        run: dir
+
   publish:
     runs-on: windows-latest
     needs: [build]
@@ -50,6 +53,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            WinMediaPie-${{ steps.tagName.outputs.tag }}-*.zip
+            WinMediaPie-${{ steps.tagName.outputs.tag }}-x64.zip
+            WinMediaPie-${{ steps.tagName.outputs.tag }}-x86.zip
         env:
           CI: true
