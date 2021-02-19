@@ -41,7 +41,7 @@ jobs:
       - name: Upload ZIP with artifacts for ${{ matrix.release-platform }}
         uses: actions/upload-artifact@v2
         with:
-          name: matrix.release-platform
+          name: ${{ matrix.release-platform }}
           path: WinMediaPie-${{ steps.tagName.outputs.tag }}-${{ matrix.release-platform }}.zip
 
   publish:
