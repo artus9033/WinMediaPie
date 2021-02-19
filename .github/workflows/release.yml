@@ -15,6 +15,9 @@ jobs:
         release-platform: ["x86", "x64"]
 
     steps:
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -38,6 +41,9 @@ jobs:
     runs-on: windows-latest
     needs: [build]
     steps:
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
       - name: Release ${{ steps.get-version.outputs.version }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
