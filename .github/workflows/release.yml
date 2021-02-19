@@ -48,6 +48,10 @@ jobs:
     runs-on: windows-latest
     needs: [build]
     steps:
+      - name: Extract tag name
+        uses: olegtarasov/get-tag@v2.1
+        id: tagName
+
       - name: Download x86 artifact
         uses: actions/download-artifact@v2
         with:
