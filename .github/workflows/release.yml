@@ -1,7 +1,7 @@
 name: Release WinMediaPie
 
 on:
-  create:
+  push:
     tags:
       - v*
 
