@@ -35,6 +35,7 @@ jobs:
           dest: dist/WinMediaPie-${{ steps.get-version.outputs.version }}-${{ matrix.release-platform }}.zip
 
   publish:
+    runs-on: windows-latest
     needs: [build]
     steps:
       - name: Release ${{ steps.get-version.outputs.version }}
