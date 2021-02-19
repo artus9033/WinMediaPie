@@ -29,14 +29,14 @@ jobs:
         run: msbuild -t:restore
 
       - name: Build for platform ${{ matrix.release-platform }}
-        run: msbuild WinMediaPie.csproj /p:Configuration=Release /p:Platform=${{ matrix.release-platform }} /verbosity:d
+        run: msbuild WinMediaPie.csproj /p:Configuration=Release /p:Platform=${{ matrix.release-platform }}
 
       - name: ZIP build artifacts
         uses: papeloto/action-zip@v1
         with:
           files: bin/${{matrix.release-platform}}/Release/
           recursive: true
-          dest: dist/WinMediaPie-${{ steps.tagName.outputs.tag }}-${{ matrix.release-platform }}.zip
+          dest: WinMediaPie-${{ steps.tagName.outputs.tag }}-${{ matrix.release-platform }}.zip
 
   publish:
     runs-on: windows-latest
@@ -50,6 +50,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            dist/*.zip
+            WinMediaPie-${{ steps.tagName.outputs.tag }}-*.zip
         env:
           CI: true
