@@ -44,9 +44,6 @@ jobs:
           name: matrix.release-platform
           path: math-homework.txt
 
-      - name: List artifacts
-        run: dir
-
   publish:
     runs-on: windows-latest
     needs: [build]
