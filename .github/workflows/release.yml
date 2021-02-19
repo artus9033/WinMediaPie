@@ -21,7 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: "Build for platform ${{ matrix.release-platform }}"
+      - name: Restore NuGet packages
+        run: msbuild -t:restore
+
+      - name: Build for platform ${{ matrix.release-platform }}
         run: msbuild WinMediaPie.csproj /p:Configuration=Release /p:Platform=${{ matrix.release-platform }}
 
       - name: Get WinMediaPie version
@@ -41,13 +44,10 @@ jobs:
     runs-on: windows-latest
     needs: [build]
     steps:
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
-
-      - name: Release ${{ steps.get-version.outputs.version }}
+      - name: Release ${{ jobs.build.steps.get-version.outputs.version }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          title: ${{ steps.get-version.outputs.version }}
+          title: ${{ jobs.build.steps.get-version.outputs.version }}
           automatic_release_tag: "latest"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
