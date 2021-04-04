@@ -18,7 +18,7 @@
 ## Table of Contents
 
 - [WinMediaPie](#winmediapie)
-    - [A lightweight floating volume & media playback controls sidebar for Windows 10](#a-lightweight-floating-volume--media-playback-controls-sidebar-for-windows-10)
+  - [A lightweight floating volume & media playback controls sidebar for Windows 10](#a-lightweight-floating-volume--media-playback-controls-sidebar-for-windows-10)
   - [Features](#features)
   - [Table of Contents](#table-of-contents)
   - [Setup instructions](#setup-instructions)
@@ -49,17 +49,18 @@ All releases are compiled automatically thanks to GitHub actions on `v*` commits
 
 ## Screenshots
 
-<div style="display: inline-flex; justify-content: space-evenly; align-content: center; align-items: center; flex-direction: row; width: 100%">
-  <figure>
-    <img src="promo/docked.png" alt="Docked sidebar">
-    <figcaption>Docked sidebar (hoverable tile)</figcaption>
-  </figure>
-
-  <figure>
-    <img src="promo/undocked.png" alt="Undocked semi-translucent sidebar">
-    <figcaption>Undocked semi-translucent sidebar</figcaption>
-  </figure>
-</div>
+<table style="width: 100%; border: none; border-collapse: collapse" cellspacing="0" cellpadding="0">
+  <tr style="border: none">
+    <td style="border: none; text-align: center">
+      <img src="promo/docked.png" alt="Docked sidebar">
+      <p style="font-size: 1.15rem">Docked sidebar (hoverable tile)</p>
+    </td>
+    <td style="border: none; text-align: center">
+      <img src="promo/undocked.png" alt="Undocked semi-translucent sidebar">
+      <p style="font-size: 1.15rem">Undocked semi-translucent sidebar</p>
+    </td>
+  </tr>
+</table>
 
 <figure>
   <img src="promo/settings.png" alt="Application settings">
