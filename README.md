@@ -4,7 +4,7 @@
 
 ![](https://img.shields.io/github/stars/artus9033/WinMediaPie.svg) ![](https://img.shields.io/github/forks/artus9033/WinMediaPie.svg) ![](https://img.shields.io/github/license/artus9033/WinMediaPie.svg) ![](https://img.shields.io/github/issues/artus9033/WinMediaPie.svg)
 
-Lightweight floating volume & media playback controls sidebar for Windows 10
+### A lightweight floating volume & media playback controls sidebar for Windows 10
 
 ## Features
 
@@ -18,11 +18,13 @@ Lightweight floating volume & media playback controls sidebar for Windows 10
 ## Table of Contents
 
 - [WinMediaPie](#winmediapie)
+    - [A lightweight floating volume & media playback controls sidebar for Windows 10](#a-lightweight-floating-volume--media-playback-controls-sidebar-for-windows-10)
   - [Features](#features)
   - [Table of Contents](#table-of-contents)
   - [Setup instructions](#setup-instructions)
   - [Usage](#usage)
   - [Downloads](#downloads)
+  - [Screenshots](#screenshots)
 
 ---
 
@@ -44,3 +46,22 @@ Lightweight floating volume & media playback controls sidebar for Windows 10
 ## Downloads
 
 All releases are compiled automatically thanks to GitHub actions on `v*` commits & can be found [here](https://github.com/artus9033/WinMediaPie/releases)
+
+## Screenshots
+
+<div style="display: inline-flex; justify-content: space-evenly; align-content: center; align-items: center; flex-direction: row; width: 100%">
+  <figure>
+    <img src="promo/docked.png" alt="Docked sidebar">
+    <figcaption>Docked sidebar (hoverable tile)</figcaption>
+  </figure>
+
+  <figure>
+    <img src="promo/undocked.png" alt="Undocked semi-translucent sidebar">
+    <figcaption>Undocked semi-translucent sidebar</figcaption>
+  </figure>
+</div>
+
+<figure>
+  <img src="promo/settings.png" alt="Application settings">
+  <figcaption>Application settings (opens on dock icon double click)</figcaption>
+</figure>
