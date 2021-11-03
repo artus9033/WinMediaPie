@@ -4,7 +4,7 @@
 
 ![](https://img.shields.io/github/stars/artus9033/WinMediaPie.svg) ![](https://img.shields.io/github/forks/artus9033/WinMediaPie.svg) ![](https://img.shields.io/github/license/artus9033/WinMediaPie.svg) ![](https://img.shields.io/github/issues/artus9033/WinMediaPie.svg)
 
-### A lightweight floating volume & media playback controls sidebar for Windows 10
+### A lightweight floating volume & media playback controls sidebar for Windows 10 & 11
 
 ## Features
 
@@ -18,7 +18,7 @@
 ## Table of Contents
 
 - [WinMediaPie](#winmediapie)
-  - [A lightweight floating volume & media playback controls sidebar for Windows 10](#a-lightweight-floating-volume--media-playback-controls-sidebar-for-windows-10)
+  - [A lightweight floating volume & media playback controls sidebar for Windows 10 & 11](#a-lightweight-floating-volume--media-playback-controls-sidebar-for-windows-10--11)
   - [Features](#features)
   - [Table of Contents](#table-of-contents)
   - [Setup instructions](#setup-instructions)

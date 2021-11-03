@@ -190,20 +190,25 @@ namespace WinMediaPie
             System.Windows.Application.Current.Dispatcher.Invoke(
                 () =>
                 {
+                    var visualBrushResource = new MahApps.Metro.IconPacks.PackIconMaterial();
+
                     if (muted)
                     {
-                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-off.png"));
+                        visualBrushResource.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeOff;
                         volumeSlider.IsEnabled = false;
                         volumeText.Opacity = 0.7;
                         volumeText.TextDecorations = new TextDecorationCollection(TextDecorations.Strikethrough);
                     }
                     else
                     {
-                        muteButtonIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Assets/volume-high.png"));
+                        visualBrushResource.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeHigh;
                         volumeSlider.IsEnabled = true;
                         volumeText.Opacity = 1;
                         volumeText.TextDecorations = new TextDecorationCollection();
                     }
+
+                    muteButtonIcon.Visual = visualBrushResource;
+
                     suppressVolSliderValueChanges++;
                     volumeSlider.Value = percent;
                     volumeText.Text = $"{(int)Math.Round(percent)}%";

@@ -35,10 +35,10 @@
             <RowDefinition Height="15*"/>
         </Grid.RowDefinitions>
         <Rectangle VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Width="28" Height="40"
-                           Fill="{DynamicResource WhiteBrush}">
+                  Fill="{DynamicResource WhiteBrush}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
-                                     Visual="{iconPacks:Material Kind=Speaker}"/>
+                           Visual="{iconPacks:Material Kind=Speaker}"/>
             </Rectangle.OpacityMask>
         </Rectangle>
         <Grid Grid.Row="0">
@@ -52,10 +52,10 @@
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
                 <Rectangle VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Width="20" Height="20"
-                                Fill="{DynamicResource WhiteBrush}">
+                         Fill="{DynamicResource WhiteBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                     Visual="{iconPacks:Material Kind=SkipPreviousCircleOutline}"/>
+                                  Visual="{iconPacks:Material Kind=SkipPreviousCircleOutline}"/>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
@@ -64,10 +64,10 @@
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
                 <Rectangle VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Width="20" Height="20"
-                                Fill="{DynamicResource WhiteBrush}">
+                         Fill="{DynamicResource WhiteBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                     Visual="{iconPacks:Material Kind=PlayCircleOutline}"/>
+                                  Visual="{iconPacks:Material Kind=PlayCircleOutline}"/>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
@@ -76,10 +76,10 @@
                     <SolidColorBrush Opacity="0.5" Color="#637592"/>
                 </Button.Background>
                 <Rectangle VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Width="20" Height="20"
-                                Fill="{DynamicResource WhiteBrush}">
+                         Fill="{DynamicResource WhiteBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                     Visual="{iconPacks:Material Kind=SkipNextCircleOutline}"/>
+                                  Visual="{iconPacks:Material Kind=SkipNextCircleOutline}"/>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
@@ -88,8 +88,8 @@
         <Slider IsSnapToTickEnabled="True" TickFrequency="1" Style="{DynamicResource FlatSlider}" x:Name="volumeSlider" Minimum="0" Maximum="100" Margin="0, 10, 0, 10" Grid.Row="3" local:MouseWheelBehavior.Value="12" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
         <ToggleButton Click="KeepMeOpenToggleButton_Click" x:Name="keepMeOpenToggleButton" Grid.RowSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="60" Height="60" Grid.Row="3" Style="{DynamicResource MetroCircleToggleButtonStyle}">
             <Rectangle Width="20"
-                           Height="25"
-                           Fill="{DynamicResource WhiteBrush}" RenderTransformOrigin="0.5,0.5">
+                     Height="25"
+                     Fill="{DynamicResource WhiteBrush}" RenderTransformOrigin="0.5,0.5">
                 <Rectangle.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -99,8 +99,7 @@
                     </TransformGroup>
                 </Rectangle.RenderTransform>
                 <Rectangle.OpacityMask>
-                    <VisualBrush
-                                     Visual="{iconPacks:Material Kind=PinOutline}"/>
+                    <VisualBrush Visual="{iconPacks:Material Kind=PinOutline}"/>
                 </Rectangle.OpacityMask>
             </Rectangle>
         </ToggleButton>
@@ -108,7 +107,13 @@
             <Button.Background>
                 <SolidColorBrush Opacity="0.5" Color="#637592"/>
             </Button.Background>
-            <Image x:Name="muteButtonIcon" VerticalAlignment="Center" HorizontalAlignment="Center" Width="20" Height="20" Source="pack://application:,,,/Assets/volume-off.png" />
+            <Rectangle Width="20"
+                           Height="25"
+                           Fill="{DynamicResource WhiteBrush}" RenderTransformOrigin="0.5,0.5">
+                <Rectangle.OpacityMask>
+                    <VisualBrush x:Name="muteButtonIcon" Visual="{iconPacks:Material Kind=VolumeOff}"/>
+                </Rectangle.OpacityMask>
+            </Rectangle>
         </Button>
     </Grid>
 </Window>

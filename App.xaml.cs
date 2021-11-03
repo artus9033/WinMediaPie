@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+﻿using Squirrel;
+using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +26,51 @@ namespace WinMediaPie
     /// </summary>
     public partial class App : System.Windows.Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            var assembly = Assembly.GetEntryAssembly();
+
+            var updateDotExe = Path.Combine(Path.GetDirectoryName(assembly.Location), "..", "Update.exe");
+
+            var isSquirrelInstallation = File.Exists(updateDotExe);
+
+            if (isSquirrelInstallation)
+            {
+                var updateTask = new Task(async () =>
+                {
+                    var mgr = await UpdateManager.GitHubUpdateManager(Constants.GITHUB_RELEASES_URL);
+                    Console.Out.WriteLine($"Checking for updates at {Constants.GITHUB_RELEASES_URL}...");
+
+                    var result = await mgr.CheckForUpdate();
+
+                    if (result.ReleasesToApply.Count > 0)
+                    {
+                        Console.Out.WriteLine($"There are {result.ReleasesToApply.Count} update(s) to be downloaded. WinMediaPie will be upgraded to version {result.FutureReleaseEntry.Version}.");
+
+                        Toaster.Toast($"Updating WinMediaPie to version {result.FutureReleaseEntry.Version} in background");
+                    }
+                    else
+                    {
+                        Console.Out.WriteLine($"There are no new updates. Version {result.CurrentlyInstalledVersion.Version} is the latest available");
+                    }
+
+                    await mgr.UpdateApp();
+                });
+
+                updateTask.ContinueWith(t =>
+                {
+                    AggregateException exception = t.Exception;
+
+                    Console.Out.WriteLine("Error checking for updates: ", exception);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+
+                updateTask.Start();
+            }
+            else
+            {
+                Console.Out.WriteLine("Not a Squirrel setup based installation, automatic updates are unavailable.");
+            }
+        }
     }
 
     public class MouseWheelBehavior

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>WinMediaPie</id>
+    <version>1.0.1</version>
+    <authors>Artur Morys - Magiera @artus9033</authors>
+    <owners>Artur Morys - Magiera @artus9033</owners>
+    <licenseUrl>https://raw.githubusercontent.com/artus9033/WinMediaPie/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/artus9033/WinMediaPie</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/artus9033/WinMediaPie/master/Assets/icon.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A lightweight floating volume and media playback controls sidebar for Windows 10 & 11</description>
+    <copyright>Copyright 2018</copyright>
+    <tags>media, volume, floating</tags>
+  </metadata>
+</package>

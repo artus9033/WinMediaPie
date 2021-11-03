@@ -4,12 +4,8 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Windows;
 using System.Windows.Resources;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
-using System.Runtime;
 
 namespace WinMediaPie
 {
@@ -23,21 +19,9 @@ namespace WinMediaPie
         [DllImport("user32.dll")]
         static extern bool MoveWindow(IntPtr hWndChild, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
-        const string APP_ID = "WinMediaPie";
-
         FloatingWindow floatingWindow;
 
         System.Windows.Forms.NotifyIcon notifyIcon = new System.Windows.Forms.NotifyIcon();
-
-        /// <summary>
-        /// Stores paths to icon assets
-        /// </summary>
-        class AppPaths
-        {
-            public static string appTmpPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), APP_ID);
-            public static string iconPngPath = System.IO.Path.Combine(AppPaths.appTmpPath, "icon.png");
-            public static string iconIcoPath = System.IO.Path.Combine(AppPaths.appTmpPath, "icon.ico");
-        }
 
         /// <summary>
         /// Creates a MainWindow displaying app settings and bootstrapping the whole application
@@ -90,38 +74,11 @@ namespace WinMediaPie
             menuItemExit.Text = "Exit";
             menuItemExit.Click += new System.EventHandler(this.ExitClick);
 
-            this.notifyIcon.Icon = this.GetIconFromFile(AppPaths.iconIcoPath);
+            this.notifyIcon.Icon = this.GetIconFromFile(Constants.AppPaths.iconIcoPath);
             this.notifyIcon.Visible = false;
-            this.notifyIcon.Text = APP_ID;
+            this.notifyIcon.Text = Constants.APP_ID;
             this.notifyIcon.DoubleClick += this.NotifyIconDoubleClicked;
             this.notifyIcon.ContextMenu = contextMenu;
-        }
-
-        /// <summary>
-        /// Shows a Windows 10 ModernUI toast notification
-        /// </summary>
-        /// <param name="text">The content of the toast</param>
-        public void Toast(string text = "")
-        {
-            try
-            {
-                XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastImageAndText03);
-
-                XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
-
-                stringElements[0].AppendChild(toastXml.CreateTextNode(APP_ID));
-                stringElements[0].AppendChild(toastXml.CreateTextNode(text));
-
-                XmlNodeList imageElements = toastXml.GetElementsByTagName("image");
-                imageElements[0].Attributes.GetNamedItem("src").NodeValue = AppPaths.iconPngPath;
-
-                ToastNotification toast = new ToastNotification(toastXml);
-
-                ToastNotificationManager.CreateToastNotifier(APP_ID).Show(toast);
-            }catch(Exception e)
-            {
-                Console.WriteLine($"Błąd podczas pokazywania powiadomienia: {e.ToString()}");
-            }
         }
 
         /// <summary>
@@ -129,16 +86,16 @@ namespace WinMediaPie
         /// </summary>
         private void PrepareFS()
         {
-            if (!Directory.Exists(AppPaths.appTmpPath))
+            if (!Directory.Exists(Constants.AppPaths.appTmpPath))
             {
-                Directory.CreateDirectory(AppPaths.appTmpPath);
+                Directory.CreateDirectory(Constants.AppPaths.appTmpPath);
             }
 
             Uri iconPngPackUri = new Uri("pack://application:,,,/Assets/icon.png");
-            this.EnsureUnpacked(iconPngPackUri, AppPaths.iconPngPath);
+            this.EnsureUnpacked(iconPngPackUri, Constants.AppPaths.iconPngPath);
 
             Uri iconIcoPackUri = new Uri("pack://application:,,,/Assets/icon.png");
-            this.EnsureUnpacked(iconIcoPackUri, AppPaths.iconIcoPath);
+            this.EnsureUnpacked(iconIcoPackUri, Constants.AppPaths.iconIcoPath);
         }
 
         /// <summary>
@@ -170,18 +127,16 @@ namespace WinMediaPie
         /// </summary>
         private void PutToForeground()
         {
-            if (!this.IsVisible)
-            {
-                this.notifyIcon.Visible = false;
-                this.WindowState = WindowState.Minimized;
-                this.Show();
-                this.WindowState = WindowState.Normal;
-                this.Focus();
-                this.BringIntoView();
-            }
+            Console.WriteLine("Bringing the window back to foreground...");
+
             this.floatingWindow.HideAllWindows();
             this.floatingWindow.Hide();
-            Console.WriteLine("Bringing the window back to foreground...");
+
+            this.notifyIcon.Visible = false;
+            this.Show();
+            this.BringIntoView();
+            this.Activate();
+            this.Focus();
         }
 
         /// <summary>
@@ -196,7 +151,7 @@ namespace WinMediaPie
                 this.Hide();
                 this.floatingWindow.ShowSelfOrPie();
 
-                this.Toast(" is running in background");
+                Toaster.Toast($"{Constants.APP_ID} is running in background");
                 Console.WriteLine("Hiding the window to background...");
             }
         }
@@ -224,7 +179,7 @@ namespace WinMediaPie
         {
             this.PutToForeground();
             Console.WriteLine("Showing the 'about' dialog!");
-            this.ShowMessageAsync("About the app", "WinMediaPie - a simple floating media control sidebar developed by artus9033", MessageDialogStyle.Affirmative);
+            this.ShowMessageAsync("About the app", "WinMediaPie - lightweight floating volume & media playback controls sidebar for Windows 10 & 11 developed by artus9033, with KamykO's contribution", MessageDialogStyle.Affirmative);
         }
 
         private void ExitClick(object sender, EventArgs e)
