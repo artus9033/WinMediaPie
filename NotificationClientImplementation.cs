@@ -21,17 +21,7 @@ namespace WinMediaPie
         /// <remarks>
         /// Calling Initialize is needed after instantiating this class AND assigning a callback to <see cref="VolumeChange"/>
         /// </remarks>
-        /// <example>
-        /// Example usage:
-        /// <code>
-        /// notificationClient = new NotificationClientImplementation(deviceEnum);
-        /// notificationClient.VolumeChange += NotificationClient_VolumeChange;
-        /// notifyClient = notificationClient;
-        /// deviceEnum.RegisterEndpointNotificationCallback(notifyClient);
-        /// notificationClient.Initialize();
-        /// </code>
-        /// </example>
-        /// <param name="mMDeviceEnumerator">An instance of MMDeviceEnumerator to be utilized by this instance</param>
+        /// <param name="mMDeviceEnumerator">An instance of MMDeviceEnumerator that identifies the controlled sound device</param>
         public NotificationClientImplementation(MMDeviceEnumerator mMDeviceEnumerator)
         {
             this.mMDeviceEnumerator = mMDeviceEnumerator;
@@ -100,28 +90,17 @@ namespace WinMediaPie
             }
         }
 
-        /// <summary>
-        /// This handles default audio playback device change
-        /// </summary>
-        /// <param name="dataFlow"></param>
-        /// <param name="role"></param>
-        /// <param name="defaultDeviceId"></param>
         public void OnDefaultDeviceChanged(DataFlow dataFlow, Role role, string defaultDeviceId)
         {
-            Console.WriteLine("OnDefaultDeviceChanged --> {0}", dataFlow.ToString());
+            Console.WriteLine($"Default playback device changed to {dataFlow.ToString()}");
             MaybeClearVolumeNotificationListener();
             currentDefaultDevice = mMDeviceEnumerator.GetDevice(defaultDeviceId);
             MaybeSetupVolumeNotificationListener();
         }
 
-        /// <summary>
-        /// This handles volume level and audio mute changes
-        /// </summary>
-        /// <param name="data"></param>
         private void AudioEndpointVolume_OnVolumeNotification(AudioVolumeNotificationData data)
         {
-            Console.WriteLine("New Volume {0}", data.MasterVolume);
-            Console.WriteLine("Muted      {0}", data.Muted);
+            Console.WriteLine($"Volume changed to {Math.Round(data.MasterVolume * 100)}%, {(data.Muted ? "muted" : "unmuted")}");
 
             VolumeChange(this, new VolumeChangeEventArgs
             {
@@ -130,39 +109,21 @@ namespace WinMediaPie
             });
         }
 
-        /// <summary>
-        /// Handler executed when a new audio playback device is added
-        /// </summary>
-        /// <param name="pwstrDeviceId"></param>
         public void OnDeviceAdded(string pwstrDeviceId)
         {
             // Do nothing
         }
 
-        /// <summary>
-        /// Handler executed when an audio playback device is removed
-        /// </summary>
-        /// <param name="deviceId"></param>
         public void OnDeviceRemoved(string deviceId)
         {
             // Do nothing
         }
 
-        /// <summary>
-        /// Handles audio playback device state changes
-        /// </summary>
-        /// <param name="deviceId"></param>
-        /// <param name="newState"></param>
         public void OnDeviceStateChanged(string deviceId, DeviceState newState)
         {
-            Console.WriteLine("OnDeviceStateChanged\n Device Id -->{0} : Device State {1}", deviceId, newState);
+            Console.WriteLine($"Device {deviceId} state changed to {newState}");
         }
 
-        /// <summary>
-        /// Handles audio playback device property value changes
-        /// </summary>
-        /// <param name="pwstrDeviceId"></param>
-        /// <param name="key"></param>
         public void OnPropertyValueChanged(string pwstrDeviceId, PropertyKey key)
         {
             // Do nothing
